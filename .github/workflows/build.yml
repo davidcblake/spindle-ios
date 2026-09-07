@@ -3,8 +3,17 @@ name: Build
 on:
   push:
     branches: [main]
+    # A Mac runner costs roughly ten times a Linux one, and a roadmap edit
+    # cannot break a build. Anything under .github is deliberately not ignored:
+    # a change to the build itself has to be built.
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
 
 concurrency:
   group: build-${{ github.workflow }}-${{ github.ref }}

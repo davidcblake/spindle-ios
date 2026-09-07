@@ -6,15 +6,15 @@ device — not "the code is written".
 
 Last updated: 2026-09-07
 
-## Phase 0 — It builds ⏳ in progress
+## Phase 0 — It builds ✅ done (2026-09-07)
 
 - [x] The Xcode project, generated from `project.yml`
 - [x] A journal model that obeys CloudKit's schema rules
 - [x] The journal screen, reading from the device, with its empty state
-- [ ] **A green build.** Blocked: `project.yml` depends on the foundation at
-      `0.1.0`, and that tag does not exist yet. The first CI run will fail to
-      resolve the package and say so plainly. It goes green when the tag is
-      pushed — nothing else about this repository has to change.
+- [x] **A green build**, against the foundation at `0.1.0` —
+      [run 34166265470](https://github.com/davidcblake/spindle-ios/actions/runs/34166265470).
+      The first attempt failed exactly as predicted, on resolving a tag that did
+      not exist yet; the tag was pushed and nothing else had to change.
 
 **Done means:** CI builds the app against a tagged foundation.
 
@@ -49,6 +49,5 @@ Last updated: 2026-09-07
 
 | Blocker | Blocks | Status |
 |---|---|---|
-| The foundation has no `0.1.0` tag | Phase 0 | Waiting on Dave. This session's git proxy refuses tag pushes (403), so it cannot be done from here |
 | Decision `0002` — how the API knows a caller with no account | Preparing a study | Proposed, recommending App Attest. Dave's call |
 | CloudKit container + signing | Phase 2 | Container exists; the app has never been signed |
