@@ -1,0 +1,49 @@
+# What the Xcode project is, in a file a person can read and a reviewer can
+# argue with. `xcodegen generate` turns this into Spindle.xcodeproj, which is
+# deliberately not committed.
+name: Spindle
+
+options:
+  bundleIdPrefix: com.wpv
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+
+packages:
+  PlugAndPlay:
+    url: https://github.com/davidcblake/plug-and-play-ios
+    # A tagged version, never `main` -- a change to the foundation must not be
+    # able to break a shipped app. Taking a newer one is a decision somebody
+    # makes on purpose.
+    from: 0.1.0
+
+targets:
+  Spindle:
+    type: application
+    platform: iOS
+    sources:
+      - Sources
+    dependencies:
+      - package: PlugAndPlay
+        product: PPCore
+      - package: PlugAndPlay
+        product: PPData
+      - package: PlugAndPlay
+        product: PPDesign
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wpv.spindle
+        MARKETING_VERSION: "0.1"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        # Off so CI can build without certificates. Signing happens in Xcode on
+        # Dave's machine, and has to be on before anything reaches a device or
+        # TestFlight -- see README.
+        CODE_SIGNING_ALLOWED: NO
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: Spindle
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait

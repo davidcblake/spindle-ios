@@ -1,0 +1,10 @@
+# The Xcode project is generated from project.yml by XcodeGen, for the reason
+# given in plug-and-play-ios/docs/decisions/0021-xcodegen.md: committing it
+# means reviewing a file nobody can read and resolving merge conflicts in one.
+Spindle.xcodeproj
+Info.plist
+
+.DS_Store
+build/
+DerivedData/
+*.xcresult
