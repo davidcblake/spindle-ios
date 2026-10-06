@@ -4,7 +4,7 @@
 commit as the work it describes. If it says something is done, it is done on a
 device — not "the code is written".
 
-Last updated: 2026-09-07
+Last updated: 2026-10-06
 
 ## Phase 0 — It builds ✅ done (2026-09-07)
 
@@ -18,26 +18,79 @@ Last updated: 2026-09-07
 
 **Done means:** CI builds the app against a tagged foundation.
 
-## Phase 1 — A study on the phone ⬜
+## The goal: everything the web app does, then evolve it
 
-- [ ] The study JSON decoded into types (the contract is `docs/spindle-prd.md`
-      §6.2 in the web repository)
-- [ ] Passage selection across the standard works
-- [ ] The ten-section study view
-- [ ] Preparing a study — needs the API to accept a caller with no account,
-      which is decision `0002` and is server work, not app work
+**Decided 2026-10-06 by Dave:** the first version of Spindle for iPhone does
+*everything the web app at `davidcblake/spindle` does today*, and nothing new.
+Changes to the product wait until that copy is finished.
 
-## Phase 2 — Sync and the rest ⬜
+The list below was taken from the web app's **code**, not from its spec.
+`docs/spindle-prd.md` is out of date: the live app also has a General
+Conference section, My Thoughts, Settings, a welcome screen and Plans, and
+none of those are in the spec.
+
+There is no sign-in on purpose (`0001`): iCloud does the job the website's
+accounts do.
+
+## Phase 1 — Everything that does not need the server ⬜
+
+None of this waits on decision `0002`.
+
+- [ ] **Scripture data:** five volumes, every book's chapter count, the
+      single-chapter books, and D&C's two Official Declarations, copied from
+      `src/lib/scripture.ts` together with its tests. This brings this
+      repository's first test target.
+- [ ] **Choosing a passage:** volume, then book, then chapter tiles; pick
+      several; the reference is written out as you go ("Alma 5–7, 32"); changing
+      volume or book clears the chapters; 20 chapters at most, which is the
+      server's limit
+- [ ] **The study as types:** the eleven sections, including *From General
+      Conference*. The contract is `src/lib/study.ts`; §6.2 of the spec is
+      missing the conference section
+- [ ] **The study screen:** all eleven sections in order; the ones a person
+      has hidden are left out; scripture references and conference talks open in
+      Gospel Library (copied from `src/lib/links.ts`)
+- [ ] **Journal:** newest first, showing the reference, the date and the
+      anchor line; opens with no connection; delete asks first
+- [ ] **My Thoughts:** a person's own dated notes on a study; add and delete
+- [ ] **Welcome:** on first launch, an invitation to fill in the profile.
+      Every field is optional and can be skipped
+- [ ] **Settings:** the profile (first name, calling, family, study focus,
+      spiritual season); show or hide each study section; how widely to draw on
+      general conference
+- [ ] **Print or save as PDF** from any study
+- [ ] **Offline:** "Offline — journal available"; Prepare explains why it
+      cannot run; everything already saved still works
+- [ ] **The details:** the header's "Feast upon the words of Christ" and the
+      2 Nephi 25:26 footer
+
+## Phase 2 — The two features that call the server ⬜
+
+**Blocked on decision `0002`.** Both endpoints of the web app's server (the
+addresses the app calls) assume a signed-in website user. They turn away
+anyone else, they read the profile from the website's database, and their
+limits on how often someone can use them count rows that a phone saving to
+iCloud never writes.
+
+- [ ] `0002` decided (Dave)
+- [ ] `/api/study` accepts the app: knows the caller is genuine, has its own
+      usage limit per device, and takes the profile in the request, checking it
+      and cutting it to a safe length on the server
+- [ ] `/api/plan` the same
+- [ ] **Preparing a study:** a loading state; the study saved before it is
+      shown; errors that say what went wrong (no connection, the service
+      refused, the study was cut off)
+- [ ] **Plans:** describe what you want, get a plan back, open it, tick items
+      off ("3 of 8 complete"), delete with a confirmation
+
+## Phase 3 — iCloud on ⬜
 
 - [ ] The store switched to `.synced`, once the CloudKit container is entitled
       and signed. **This is the first time the foundation's CloudKit code will
       ever have run.**
-- [ ] Thoughts on an entry, with dictation (`PPInput`)
-- [ ] A daily reminder (`PPNotify`)
-- [ ] Gospel Library deep links
-- [ ] Study plans
+- [ ] The same journal, thoughts, plans and settings on a second device
 
-## Phase 3 — TestFlight ⬜
+## Phase 4 — TestFlight ⬜
 
 - [ ] Signing, an App Store Connect record, a build uploaded
 - [ ] A privacy policy and accurate privacy labels
@@ -45,9 +98,20 @@ Last updated: 2026-09-07
 
 **Done means:** a person in the ward opens it on their own phone and studies.
 
+## After the copy is finished — not before
+
+Ideas that are not in the web app, so they wait:
+
+- Dictation for My Thoughts through `PPInput`. The keyboard's own microphone
+  already works on day one, as it does on the web.
+- A daily reminder (`PPNotify`)
+- Anything from the spec's v2 list, and the open question in
+  `plug-and-play-ios/docs/where-we-are.md`: a study generator, or a
+  conversational companion
+
 ## Known blockers
 
 | Blocker | Blocks | Status |
 |---|---|---|
-| Decision `0002` — how the API knows a caller with no account | Preparing a study | Proposed, recommending App Attest. Dave's call |
-| CloudKit container + signing | Phase 2 | Container exists; the app has never been signed |
+| Decision `0002`: how the server recognises a caller with no account | Phase 2 (preparing a study and Plans) | Proposed, recommending App Attest. Dave's call |
+| CloudKit container + signing | Phase 3 | Container exists; the app has never been signed |
