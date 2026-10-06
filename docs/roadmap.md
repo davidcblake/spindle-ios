@@ -36,10 +36,13 @@ accounts do.
 
 None of this waits on decision `0002`.
 
-- [ ] **Scripture data:** five volumes, every book's chapter count, the
+- [x] **Scripture data:** five volumes, every book's chapter count, the
       single-chapter books, and D&C's two Official Declarations, copied from
-      `src/lib/scripture.ts` together with its tests. This brings this
-      repository's first test target.
+      `src/lib/scripture.ts` together with its tests (`Sources/Scripture.swift`,
+      `Tests/ScriptureTests.swift`). This is the repository's first test
+      target, and CI now runs the tests as well as building. One deliberate
+      difference: declarations are written in their own order, not the order
+      they were tapped
 - [ ] **Choosing a passage:** volume, then book, then chapter tiles; pick
       several; the reference is written out as you go ("Alma 5–7, 32"); changing
       volume or book clears the chapters; 20 chapters at most, which is the
@@ -66,13 +69,14 @@ None of this waits on decision `0002`.
 
 ## Phase 2 — The two features that call the server ⬜
 
-**Blocked on decision `0002`.** Both endpoints of the web app's server (the
+**Decision `0002` is made: App Attest** (Dave, 2026-10-06). What blocks this
+phase now is server work in `davidcblake/spindle`, not a decision. Both endpoints of the web app's server (the
 addresses the app calls) assume a signed-in website user. They turn away
 anyone else, they read the profile from the website's database, and their
 limits on how often someone can use them count rows that a phone saving to
 iCloud never writes.
 
-- [ ] `0002` decided (Dave)
+- [x] `0002` decided: App Attest (Dave, 2026-10-06)
 - [ ] `/api/study` accepts the app: knows the caller is genuine, has its own
       usage limit per device, and takes the profile in the request, checking it
       and cutting it to a safe length on the server
@@ -113,5 +117,5 @@ Ideas that are not in the web app, so they wait:
 
 | Blocker | Blocks | Status |
 |---|---|---|
-| Decision `0002`: how the server recognises a caller with no account | Phase 2 (preparing a study and Plans) | Proposed, recommending App Attest. Dave's call |
+| Server support for App Attest (`0002`, decided 2026-10-06) | Phase 2 (preparing a study and Plans) | Not started. Work in `davidcblake/spindle` |
 | CloudKit container + signing | Phase 3 | Container exists; the app has never been signed |

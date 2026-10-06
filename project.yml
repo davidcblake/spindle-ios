@@ -23,6 +23,11 @@ targets:
     platform: iOS
     sources:
       - Sources
+    # Gives the generated Spindle scheme a Test action, so `xcodebuild test`
+    # runs SpindleTests rather than finding nothing to run.
+    scheme:
+      testTargets:
+        - SpindleTests
     dependencies:
       - package: PlugAndPlay
         product: PPCore
@@ -47,3 +52,16 @@ targets:
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+
+  SpindleTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests
+    dependencies:
+      - target: Spindle
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "6.0"
+        CODE_SIGNING_ALLOWED: NO
