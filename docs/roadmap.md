@@ -40,7 +40,9 @@ None of this waits on decision `0002`.
       single-chapter books, and D&C's two Official Declarations, copied from
       `src/lib/scripture.ts` together with its tests (`Sources/Scripture.swift`,
       `Tests/ScriptureTests.swift`). This is the repository's first test
-      target, and CI now runs the tests as well as building. One deliberate
+      target, and CI now runs the tests as well as building: 14 tests in 2 suites
+      green, [run 37549047583](https://github.com/davidcblake/spindle-ios/actions/runs/37549047583).
+      One deliberate
       difference: declarations are written in their own order, not the order
       they were tapped
 - [ ] **Choosing a passage:** volume, then book, then chapter tiles; pick
