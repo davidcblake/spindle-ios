@@ -126,6 +126,9 @@ iCloud never writes.
 
 - [ ] Signing, an App Store Connect record, a build uploaded
 - [ ] A privacy policy and accurate privacy labels
+      - [x] Drafted: the policy at `/privacy` (spindle PR #5, waiting on a
+            contact address) and the App Store answers in `docs/app-store.md`
+      - [ ] Published, and the questionnaire filled in (Dave)
 - [ ] Somebody who is not Dave using it for a week
 
 **Done means:** a person in the ward opens it on their own phone and studies.
