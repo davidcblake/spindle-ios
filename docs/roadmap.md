@@ -75,7 +75,9 @@ None of this waits on decision `0002`.
       general conference. `SettingsScreen.swift`, `Profile.swift`. Saved as it
       is typed, to the phone; nothing is sent anywhere until preparing a study
       works
-- [ ] **Print or save as PDF** from any study
+- [x] **Print or save as PDF** from any study: the share button on a study
+      makes a PDF on US Letter pages, and the share sheet offers Print and
+      Save to Files. `StudyPDF.swift`. Links are not tappable in the PDF
 - [ ] **Offline:** "Offline — journal available"; Prepare explains why it
       cannot run; everything already saved still works
 - [ ] **The details:** the header's "Feast upon the words of Christ" and the
