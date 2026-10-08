@@ -33,7 +33,7 @@ struct SpindleApp: App {
     var body: some Scene {
         WindowGroup {
             content
-                .ppTheme(.plugAndPlay)
+                .ppTheme(.spindle)
         }
     }
 
@@ -41,8 +41,16 @@ struct SpindleApp: App {
     private var content: some View {
         switch journal {
         case .success(let container):
-            JournalScreen()
-                .modelContainer(container)
+            TabView {
+                Tab("Prepare", systemImage: "book") {
+                    PrepareScreen()
+                }
+                Tab("Journal", systemImage: "books.vertical") {
+                    JournalScreen()
+                }
+            }
+            .tint(PPTheme.spindle.accent)
+            .modelContainer(container)
         case .failure(let error):
             PPErrorView(error: CouldNotOpenTheJournal(logMessage: String(describing: error)))
         }

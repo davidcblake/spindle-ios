@@ -4,7 +4,7 @@
 commit as the work it describes. If it says something is done, it is done on a
 device — not "the code is written".
 
-Last updated: 2026-10-06
+Last updated: 2026-10-08
 
 ## Phase 0 — It builds ✅ done (2026-09-07)
 
@@ -45,10 +45,13 @@ None of this waits on decision `0002`.
       One deliberate
       difference: declarations are written in their own order, not the order
       they were tapped
-- [ ] **Choosing a passage:** volume, then book, then chapter tiles; pick
+- [x] **Choosing a passage:** volume, then book, then chapter tiles; pick
       several; the reference is written out as you go ("Alma 5–7, 32"); changing
       volume or book clears the chapters; 20 chapters at most, which is the
-      server's limit
+      server's limit. `PrepareScreen`, `PassageSelection` and its tests, in a
+      tab bar beside the Journal, in Spindle's blue (`SpindleTheme.swift`).
+      **Prepare Study is shown but disabled** until Phase 2. Not yet looked
+      at by a person on a screen
 - [ ] **The study as types:** the eleven sections, including *From General
       Conference*. The contract is `src/lib/study.ts`; §6.2 of the spec is
       missing the conference section
