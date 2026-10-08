@@ -38,6 +38,10 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.wpv.spindle
+        # The web app's icon (spindle/public/icons/ios-1024.png), with its
+        # alpha channel removed: App Store Connect refuses an icon that has one,
+        # even when nothing in it is transparent.
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         MARKETING_VERSION: "0.1"
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_VERSION: "6.0"
