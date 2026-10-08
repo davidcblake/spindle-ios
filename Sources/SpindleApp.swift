@@ -19,6 +19,15 @@ struct SpindleApp: App {
     /// indistinguishable from having lost everything they wrote. So the failure
     /// is carried to a screen that says what happened.
     private let journal: Result<ModelContainer, any Error>
+    @State private var connection = Connection()
+    /// Where studies are prepared. With no server named in the build, the app
+    /// says so plainly instead of calling one that is not there — the server
+    /// side of decision `0003` is not built yet.
+    private let studyService: any StudyService = { () -> any StudyService in
+        let address = BundleConfiguration().string("SpindleServer", default: "")
+        guard let server = URL(string: address), !address.isEmpty else { return NoStudyService() }
+        return AppAttestStudyService(server: server)
+    }()
 
     init() {
         journal = Result {
@@ -43,6 +52,8 @@ struct SpindleApp: App {
         case .success(let container):
             RootView()
                 .tint(PPTheme.spindle.accent)
+                .environment(connection)
+                .environment(\.studyService, studyService)
                 .modelContainer(container)
         case .failure(let error):
             PPErrorView(error: CouldNotOpenTheJournal(logMessage: String(describing: error)))

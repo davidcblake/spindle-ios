@@ -78,10 +78,11 @@ None of this waits on decision `0002`.
 - [x] **Print or save as PDF** from any study: the share button on a study
       makes a PDF on US Letter pages, and the share sheet offers Print and
       Save to Files. `StudyPDF.swift`. Links are not tappable in the PDF
-- [ ] **Offline:** "Offline — journal available"; Prepare explains why it
-      cannot run; everything already saved still works
-- [ ] **The details:** the header's "Feast upon the words of Christ" and the
-      2 Nephi 25:26 footer
+- [x] **Offline:** Prepare explains why it cannot run and the button is
+      off; everything already saved still works. `Connection.swift`. The web
+      app's header badge is not copied: on a phone, only Prepare cares
+- [x] **The details:** "Feast upon the words of Christ" heads the Prepare
+      screen; the 2 Nephi 25:26 footer closes every study
 
 ## Phase 2 — The two features that call the server ⬜
 
@@ -100,6 +101,11 @@ iCloud never writes.
 - [ ] **Preparing a study:** a loading state; the study saved before it is
       shown; errors that say what went wrong (no connection, the service
       refused, the study was cut off)
+      - [x] The phone's half, against decision `0003`: `StudyService`,
+            `AppAttestStudyService`, the loading screen, saving before showing,
+            the web app's messages. **Off in this build** — with no
+            `SpindleServer` setting, Prepare says it isn't switched on yet
+      - [ ] The server's half: `/api/app/challenge`, `/register`, `/study`
 - [ ] **Plans:** describe what you want, get a plan back, open it, tick items
       off ("3 of 8 complete"), delete with a confirmation
 
