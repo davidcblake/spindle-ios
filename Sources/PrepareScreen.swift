@@ -1,4 +1,5 @@
 import PPDesign
+import SwiftData
 import SwiftUI
 
 /// Choosing a passage: a volume, then a book, then one or more chapters.
@@ -8,12 +9,42 @@ import SwiftUI
 /// check.
 struct PrepareScreen: View {
     @Environment(\.ppTheme) private var theme
+    @Environment(\.modelContext) private var context
+    @Environment(\.studyService) private var studyService
+    @Environment(Connection.self) private var connection: Connection?
+    @Query private var profiles: [Profile]
     @State private var selection = PassageSelection()
+    /// The passage being prepared, while the server works on it.
+    @State private var preparing: String?
+    @State private var failure: StudyFailure?
+    /// The study just prepared, which the screen moves on to.
+    @State private var prepared: JournalEntry?
+
+    private var isOnline: Bool { connection?.isOnline ?? true }
 
     var body: some View {
         NavigationStack {
+            Group {
+                if let preparing {
+                    PreparingView(reference: preparing)
+                } else {
+                    chooser
+                }
+            }
+            .background(theme.background)
+            .navigationTitle("Prepare")
+            .navigationDestination(item: $prepared) { entry in
+                StudyScreen(entry: entry, hidden: Profile.current(in: profiles)?.hidden ?? [])
+            }
+        }
+    }
+
+    private var chooser: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: PPSpacing.large) {
+                    Text("Feast upon the words of Christ")
+                        .ppText(.sectionTitle)
+                        .foregroundStyle(theme.accent)
                     Text("Choose a passage and prepare a study that traces its people, principles, and doctrine across all four standard works — and shows how each points to the Savior.")
                         .ppText(.body)
                         .foregroundStyle(theme.textSecondary)
@@ -31,12 +62,47 @@ struct PrepareScreen: View {
                             .ppText(.caption)
                             .foregroundStyle(theme.textSecondary)
                     }
+                    if !isOnline {
+                        Label("You're offline — preparing a new study needs a connection, but your journal is fully readable.", systemImage: "wifi.slash")
+                            .ppText(.caption)
+                            .foregroundStyle(theme.textSecondary)
+                    }
+                    if let failure {
+                        Text(failure.userMessage)
+                            .ppText(.caption)
+                            .foregroundStyle(theme.danger)
+                            .accessibilityAddTraits(.updatesFrequently)
+                    }
                 }
                 .padding(PPSpacing.screenMargin)
             }
-            .background(theme.background)
-            .navigationTitle("Prepare")
             .safeAreaInset(edge: .bottom) { selectionBar }
+    }
+
+    /// Asks for the study, saves it to the journal, and only then shows it —
+    /// the web app's promise that a prepared study is never only on screen.
+    private func prepare() async {
+        let request = StudyRequest(selection, profile: Profile.current(in: profiles))
+        let reference = selection.reference
+        let volume = selection.volume.name
+        failure = nil
+        preparing = reference
+        defer { preparing = nil }
+        do {
+            let study = try await studyService.prepare(request)
+            let entry = JournalEntry(
+                reference: reference,
+                volume: volume,
+                anchor: study.anchor,
+                content: try JSONEncoder().encode(study)
+            )
+            context.insert(entry)
+            try context.save()
+            prepared = entry
+        } catch let error as StudyFailure {
+            failure = error
+        } catch {
+            failure = StudyFailure("The study was prepared but couldn't be saved — tap again.", log: String(describing: error))
         }
     }
 
@@ -99,12 +165,12 @@ struct PrepareScreen: View {
                 .foregroundStyle(selection.isEmpty ? theme.textSecondary : theme.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityAddTraits(.updatesFrequently)
-            // Disabled until the study server accepts the app (roadmap,
-            // Phase 2). Shown now so the screen is the shape it will be.
-            Button("Prepare Study") {}
-                .buttonStyle(.ppProminent)
-                .fixedSize()
-                .disabled(true)
+            Button("Prepare Study") {
+                Task { await prepare() }
+            }
+            .buttonStyle(.ppProminent)
+            .fixedSize()
+            .disabled(selection.isEmpty || !isOnline)
         }
         .padding(PPSpacing.screenMargin)
         .background(theme.surface)
@@ -185,5 +251,26 @@ private struct Tile: View {
         .disabled(!isChosen && !isAvailable)
         .opacity(!isChosen && !isAvailable ? 0.4 : 1)
         .accessibilityAddTraits(isChosen ? .isSelected : [])
+    }
+}
+
+/// The web app's loading state: the passage, and what is happening to it.
+private struct PreparingView: View {
+    @Environment(\.ppTheme) private var theme
+    let reference: String
+
+    var body: some View {
+        VStack(spacing: PPSpacing.medium) {
+            ProgressView()
+                .controlSize(.large)
+            Text(reference)
+                .ppText(.sectionTitle)
+                .foregroundStyle(theme.textPrimary)
+            Text("Searching the scriptures and gathering connections…")
+                .ppText(.caption)
+                .foregroundStyle(theme.textSecondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .combine)
     }
 }
