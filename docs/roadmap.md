@@ -103,15 +103,16 @@ iCloud never writes.
       refused, the study was cut off)
       - [x] The phone's half, against decision `0003`: `StudyService`,
             `AppAttestStudyService`, the loading screen, saving before showing,
-            the web app's messages. **Off in this build** — with no
-            `SpindleServer` setting, Prepare says it isn't switched on yet
+            the web app's messages. Pointed at `spindlestudy.vercel.app`;
+            it answers "isn't set up on the server yet" until the server half
+            is switched on, and the simulator can never use it (no App Attest)
       - [x] The server's half: `/api/app/challenge`, `/register`, `/study`
             (spindle PR #4). Off until SETUP.md §6 in that repository is done
 - [ ] **Plans:** describe what you want, get a plan back, open it, tick items
       off ("3 of 8 complete"), delete with a confirmation
       - [x] The phone's half: `Plan.swift`, `PlansScreen.swift`, the Plans tab,
             plans and their items kept on the phone, both of the web app's
-            "AI-prepared" reminders. Off with Prepare until the server is on
+            "AI-prepared" reminders. Works once the server half is switched on
       - [x] The server's half: `/api/app/plan` (spindle PR #4)
 
 ## Phase 3 — iCloud on ⬜
