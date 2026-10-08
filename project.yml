@@ -45,10 +45,22 @@ targets:
         # Dave's machine, and has to be on before anything reaches a device or
         # TestFlight -- see README.
         CODE_SIGNING_ALLOWED: NO
+    # App Attest, which is how the study server knows a request comes from a
+    # genuine copy of Spindle (decision 0002 in the Spindle repository). The
+    # App ID needs the App Attest capability ticked in the developer portal
+    # before a signed build will carry this.
+    entitlements:
+      path: Spindle.entitlements
+      properties:
+        com.apple.developer.devicecheck.appattest-environment: production
     info:
       path: Info.plist
       properties:
         CFBundleDisplayName: Spindle
+        # Where studies and plans are prepared. Until the server's half is
+        # set up (SETUP.md section 6 in the Spindle repository), it answers
+        # "isn't set up on the server yet", which the app shows as it is.
+        SpindleServer: https://spindlestudy.vercel.app
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait

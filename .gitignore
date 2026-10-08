@@ -8,3 +8,4 @@ Info.plist
 build/
 DerivedData/
 *.xcresult
+Spindle.entitlements

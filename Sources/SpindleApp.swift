@@ -35,7 +35,7 @@ struct SpindleApp: App {
             // the CloudKit container is entitled and signed — see docs/roadmap.md.
             // Shipping `.synced` before then would trade a working app for a
             // launch crash on every phone without the entitlement.
-            try PPModelStore.container(for: [JournalEntry.self, Thought.self, Profile.self], kind: .thisDeviceOnly)
+            try PPModelStore.container(for: [JournalEntry.self, Thought.self, Profile.self, StudyPlan.self, PlanItem.self], kind: .thisDeviceOnly)
         }
     }
 

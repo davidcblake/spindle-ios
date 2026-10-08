@@ -34,14 +34,10 @@ struct StudyRequest: Codable, Equatable, Sendable {
     var profile: Reader
 }
 
-extension StudyRequest {
+extension StudyRequest.Reader {
     @MainActor
-    init(_ selection: PassageSelection, profile: Profile?) {
-        volumeId = selection.volume.id.rawValue
-        book = selection.chapters.isEmpty ? nil : selection.book?.name
-        chapters = selection.chapters.sorted()
-        extras = selection.volume.declarations.filter { selection.declarations.contains($0) }
-        self.profile = Reader(
+    init(_ profile: Profile?) {
+        self.init(
             firstName: profile?.firstName ?? "",
             calling: profile?.calling ?? "",
             familyContext: profile?.familyContext ?? "",
@@ -52,11 +48,49 @@ extension StudyRequest {
     }
 }
 
+extension StudyRequest {
+    @MainActor
+    init(_ selection: PassageSelection, profile: Profile?) {
+        volumeId = selection.volume.id.rawValue
+        book = selection.chapters.isEmpty ? nil : selection.book?.name
+        chapters = selection.chapters.sorted()
+        extras = selection.volume.declarations.filter { selection.declarations.contains($0) }
+        self.profile = Reader(profile)
+    }
+}
+
+/// A request for a study plan: what the person wants to study, in their own
+/// words, and the same profile a study gets. The server treats the words as a
+/// topic, never as instructions (`buildPlanPrompt` in the web app).
+struct PlanRequest: Codable, Equatable, Sendable {
+    var request: String
+    var profile: StudyRequest.Reader
+
+    /// The web app's limits on what can be asked.
+    static let shortest = 3
+    static let longest = 500
+}
+
+/// A plan as the server returns it: the web app's `PlanSchema`.
+struct GeneratedPlan: Codable, Equatable, Sendable {
+    struct Item: Codable, Equatable, Sendable {
+        var title: String
+        var subtitle: String
+        /// A scripture reference, a talk citation, or empty.
+        var reference: String
+    }
+
+    var title: String
+    var description: String
+    var items: [Item]
+}
+
 /// The one edge where a study comes from somewhere else. Behind a protocol so
 /// every screen can be built and tested without a server (`AGENTS.md`: every
 /// network edge can be faked).
 protocol StudyService: Sendable {
     func prepare(_ request: StudyRequest) async throws(StudyFailure) -> Study
+    func preparePlan(_ request: PlanRequest) async throws(StudyFailure) -> GeneratedPlan
 }
 
 /// Why a study could not be prepared, in the web app's words where it has them.
@@ -79,14 +113,23 @@ struct NoStudyService: StudyService {
     func prepare(_ request: StudyRequest) async throws(StudyFailure) -> Study {
         throw .notYet
     }
+
+    func preparePlan(_ request: PlanRequest) async throws(StudyFailure) -> GeneratedPlan {
+        throw .notYet
+    }
 }
 
 /// For tests and previews: hands back whatever it was given.
 struct InMemoryStudyService: StudyService {
-    let result: Result<Study, StudyFailure>
+    var study: Result<Study, StudyFailure> = .failure(.notYet)
+    var plan: Result<GeneratedPlan, StudyFailure> = .failure(.notYet)
 
     func prepare(_ request: StudyRequest) async throws(StudyFailure) -> Study {
-        try result.get()
+        try study.get()
+    }
+
+    func preparePlan(_ request: PlanRequest) async throws(StudyFailure) -> GeneratedPlan {
+        try plan.get()
     }
 }
 
