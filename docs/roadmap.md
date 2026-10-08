@@ -52,14 +52,18 @@ None of this waits on decision `0002`.
       tab bar beside the Journal, in Spindle's blue (`SpindleTheme.swift`).
       **Prepare Study is shown but disabled** until Phase 2. Not yet looked
       at by a person on a screen
-- [ ] **The study as types:** the eleven sections, including *From General
+- [x] **The study as types:** the eleven sections, including *From General
       Conference*. The contract is `src/lib/study.ts`; §6.2 of the spec is
-      missing the conference section
-- [ ] **The study screen:** all eleven sections in order; the ones a person
+      missing the conference section. `Study.swift`; studies saved before the
+      conference section existed still open, as on the web
+- [x] **The study screen:** all eleven sections in order; the ones a person
       has hidden are left out; scripture references and conference talks open in
-      Gospel Library (copied from `src/lib/links.ts`)
-- [ ] **Journal:** newest first, showing the reference, the date and the
-      anchor line; opens with no connection; delete asks first
+      Gospel Library (copied from `src/lib/links.ts`). `StudyScreen.swift`,
+      `GospelLibrary.swift` with the web app's link tests. Hiding is built in
+      but nothing can set it until Settings exists. Not yet looked at on a screen
+- [x] **Journal:** newest first, showing the reference, the date and the
+      anchor line; opens with no connection; delete asks first (swipe left).
+      Nothing can put a study into it until preparing a study works
 - [ ] **My Thoughts:** a person's own dated notes on a study; add and delete
 - [ ] **Welcome:** on first launch, an invitation to fill in the profile.
       Every field is optional and can be skipped
