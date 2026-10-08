@@ -78,6 +78,11 @@ struct JournalScreen: View {
                     .foregroundStyle(theme.textSecondary)
                     .lineLimit(2)
             }
+            if let count = entry.thoughts?.count, count > 0 {
+                Label(count == 1 ? "1 thought" : "\(count) thoughts", systemImage: "pencil.line")
+                    .ppText(.caption)
+                    .foregroundStyle(theme.accent)
+            }
         }
         .padding(.vertical, PPSpacing.extraSmall)
     }

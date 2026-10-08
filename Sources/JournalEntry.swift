@@ -31,11 +31,32 @@ final class JournalEntry {
     /// beats a half-modelled version that has to be migrated twice.
     var content: Data = Data()
 
+    /// Deleting a study deletes its thoughts, as on the web.
+    @Relationship(deleteRule: .cascade, inverse: \Thought.entry)
+    var thoughts: [Thought]? = []
+
     init(reference: String, volume: String, anchor: String = "", createdAt: Date = .now, content: Data = Data()) {
         self.reference = reference
         self.volume = volume
         self.anchor = anchor
         self.createdAt = createdAt
         self.content = content
+    }
+}
+
+/// A person's own note on a study: what stood out, what the Spirit taught.
+///
+/// The web app's `entry_notes`. Same CloudKit rules as `JournalEntry`: every
+/// property has a default, and the link back to the study is optional because
+/// CloudKit can deliver a thought before the study it belongs to.
+@Model
+final class Thought {
+    var body: String = ""
+    var createdAt: Date = Date.distantPast
+    var entry: JournalEntry?
+
+    init(body: String, createdAt: Date = .now) {
+        self.body = body
+        self.createdAt = createdAt
     }
 }

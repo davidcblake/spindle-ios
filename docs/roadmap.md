@@ -64,7 +64,10 @@ None of this waits on decision `0002`.
 - [x] **Journal:** newest first, showing the reference, the date and the
       anchor line; opens with no connection; delete asks first (swipe left).
       Nothing can put a study into it until preparing a study works
-- [ ] **My Thoughts:** a person's own dated notes on a study; add and delete
+- [x] **My Thoughts:** a person's own dated notes on a study; add and delete.
+      `Thought` in `JournalEntry.swift`, deleted with its study; the journal
+      shows "2 thoughts" as the web app does. Dictation is the keyboard's own
+      microphone, as on the web
 - [ ] **Welcome:** on first launch, an invitation to fill in the profile.
       Every field is optional and can be skipped
 - [ ] **Settings:** the profile (first name, calling, family, study focus,
