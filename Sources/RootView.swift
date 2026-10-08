@@ -19,6 +19,9 @@ struct RootView: View {
                 Tab("Journal", systemImage: "books.vertical") {
                     JournalScreen(hidden: profile.hidden)
                 }
+                Tab("Plans", systemImage: "checklist") {
+                    PlansScreen()
+                }
                 Tab("Settings", systemImage: "gearshape") {
                     SettingsScreen(profile: profile)
                 }

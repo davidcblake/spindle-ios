@@ -25,6 +25,19 @@ struct AppAttestStudyService: StudyService {
     private static let keyIdSetting = "appAttestKeyId"
 
     func prepare(_ request: StudyRequest) async throws(StudyFailure) -> Study {
+        let reply: StudyReply = try await ask("api/app/study", request)
+        return reply.study
+    }
+
+    func preparePlan(_ request: PlanRequest) async throws(StudyFailure) -> GeneratedPlan {
+        let reply: PlanReply = try await ask("api/app/plan", request)
+        return reply.plan
+    }
+
+    /// Sends one attested request and reads the reply.
+    private func ask<Request: Encodable, Reply: Decodable & Sendable>(
+        _ path: String, _ request: Request
+    ) async throws(StudyFailure) -> Reply {
         guard DCAppAttestService.shared.isSupported else {
             // The simulator, and devices too old for App Attest. Fails closed,
             // as `0002` intends.
@@ -38,13 +51,13 @@ struct AppAttestStudyService: StudyService {
         }
 
         do {
-            return try await send(body)
+            return try await send(body, to: path)
         } catch let failure as StudyFailure where failure == .keyRejected {
             // Apple or the server no longer accepts the key (a reinstall,
             // a restore to a new phone). Start again with a new one, once.
             defaults.removeObject(forKey: Self.keyIdSetting)
             do {
-                return try await send(body)
+                return try await send(body, to: path)
             } catch {
                 throw Self.failure(from: error)
             }
@@ -53,7 +66,7 @@ struct AppAttestStudyService: StudyService {
         }
     }
 
-    private func send(_ body: Data) async throws -> Study {
+    private func send<Reply: Decodable>(_ body: Data, to path: String) async throws -> Reply {
         let keyId = try await registeredKey()
         let assertion: Data
         do {
@@ -65,7 +78,7 @@ struct AppAttestStudyService: StudyService {
             throw StudyFailure.keyRejected
         }
 
-        var request = URLRequest(url: server.appending(path: "api/app/study"))
+        var request = URLRequest(url: server.appending(path: path))
         request.httpMethod = "POST"
         // Past the server's own sixty seconds, so a slow connection shows the
         // server's real answer rather than giving up first. The web app's number.
@@ -77,8 +90,8 @@ struct AppAttestStudyService: StudyService {
 
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-        if (200..<300).contains(status), let reply = try? JSONDecoder().decode(StudyReply.self, from: data) {
-            return reply.study
+        if (200..<300).contains(status), let reply = try? JSONDecoder().decode(Reply.self, from: data) {
+            return reply
         }
         if let problem = try? JSONDecoder().decode(ErrorReply.self, from: data) {
             if problem.error.type == "attestation", status == 401 {
@@ -158,8 +171,12 @@ extension StudyFailure {
     )
 }
 
-private struct StudyReply: Decodable {
+private struct StudyReply: Decodable, Sendable {
     let study: Study
+}
+
+private struct PlanReply: Decodable, Sendable {
+    let plan: GeneratedPlan
 }
 
 private struct ErrorReply: Decodable {
