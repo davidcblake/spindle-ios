@@ -26,7 +26,7 @@ struct SpindleApp: App {
             // the CloudKit container is entitled and signed — see docs/roadmap.md.
             // Shipping `.synced` before then would trade a working app for a
             // launch crash on every phone without the entitlement.
-            try PPModelStore.container(for: [JournalEntry.self, Thought.self], kind: .thisDeviceOnly)
+            try PPModelStore.container(for: [JournalEntry.self, Thought.self, Profile.self], kind: .thisDeviceOnly)
         }
     }
 
@@ -41,16 +41,9 @@ struct SpindleApp: App {
     private var content: some View {
         switch journal {
         case .success(let container):
-            TabView {
-                Tab("Prepare", systemImage: "book") {
-                    PrepareScreen()
-                }
-                Tab("Journal", systemImage: "books.vertical") {
-                    JournalScreen()
-                }
-            }
-            .tint(PPTheme.spindle.accent)
-            .modelContainer(container)
+            RootView()
+                .tint(PPTheme.spindle.accent)
+                .modelContainer(container)
         case .failure(let error):
             PPErrorView(error: CouldNotOpenTheJournal(logMessage: String(describing: error)))
         }

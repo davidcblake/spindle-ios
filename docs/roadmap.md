@@ -68,11 +68,13 @@ None of this waits on decision `0002`.
       `Thought` in `JournalEntry.swift`, deleted with its study; the journal
       shows "2 thoughts" as the web app does. Dictation is the keyboard's own
       microphone, as on the web
-- [ ] **Welcome:** on first launch, an invitation to fill in the profile.
-      Every field is optional and can be skipped
-- [ ] **Settings:** the profile (first name, calling, family, study focus,
+- [x] **Welcome:** on first launch, an invitation to fill in the profile.
+      Every field is optional and can be skipped. `RootView.swift`
+- [x] **Settings:** the profile (first name, calling, family, study focus,
       spiritual season); show or hide each study section; how widely to draw on
-      general conference
+      general conference. `SettingsScreen.swift`, `Profile.swift`. Saved as it
+      is typed, to the phone; nothing is sent anywhere until preparing a study
+      works
 - [ ] **Print or save as PDF** from any study
 - [ ] **Offline:** "Offline — journal available"; Prepare explains why it
       cannot run; everything already saved still works

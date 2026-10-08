@@ -11,6 +11,8 @@ struct JournalScreen: View {
     @Environment(\.ppTheme) private var theme
     @Environment(\.modelContext) private var context
     @Query(sort: \JournalEntry.createdAt, order: .reverse) private var entries: [JournalEntry]
+    /// Sections switched off in Settings, passed on to each study.
+    var hidden: Set<StudySection> = []
     /// The entry waiting on "are you sure?" before it is deleted.
     @State private var deleting: JournalEntry?
 
@@ -29,7 +31,7 @@ struct JournalScreen: View {
             }
             .navigationTitle("Journal")
             .navigationDestination(for: JournalEntry.self) { entry in
-                StudyScreen(entry: entry)
+                StudyScreen(entry: entry, hidden: hidden)
             }
         }
         .confirmationDialog(
