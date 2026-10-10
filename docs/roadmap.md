@@ -4,7 +4,7 @@
 commit as the work it describes. If it says something is done, it is done on a
 device — not "the code is written".
 
-Last updated: 2026-10-08
+Last updated: 2026-10-10
 
 ## Phase 0 — It builds ✅ done (2026-09-07)
 
@@ -114,6 +114,19 @@ iCloud never writes.
             plans and their items kept on the phone, both of the web app's
             "AI-prepared" reminders. Works once the server half is switched on
       - [x] The server's half: `/api/app/plan` (spindle PR #4)
+
+## Feedback from inside the app ✅ built (2026-10-10)
+
+**Asked for by Dave on 2026-10-10.** Settings → *Send feedback or an idea*. The note goes
+to the server's `/api/app/feedback`, which is attested and limited per hour like a
+study. The server keeps it and pushes it to Dave's phone through ntfy. Decision `0006`
+in `davidcblake/spindle` covers this and the server's other alerts: failures, running
+out of credit, and new installs.
+
+- [x] `FeedbackScreen.swift`, `Feedback` and `sendFeedback` in `StudyService.swift`,
+      `Tests/FeedbackTests.swift`. Not yet tried on a phone
+- [ ] Works end to end once Dave has run migration 0006, set `NTFY_TOPIC` in Vercel and
+      subscribed in the ntfy app (SETUP.md §7 in `davidcblake/spindle`)
 
 ## Phase 3 — iCloud on ⬜
 

@@ -34,6 +34,10 @@ struct AppAttestStudyService: StudyService {
         return reply.plan
     }
 
+    func sendFeedback(_ feedback: Feedback) async throws(StudyFailure) {
+        let _: NoReply = try await ask("api/app/feedback", feedback)
+    }
+
     /// Sends one attested request and reads the reply.
     private func ask<Request: Encodable, Reply: Decodable & Sendable>(
         _ path: String, _ request: Request
@@ -90,8 +94,10 @@ struct AppAttestStudyService: StudyService {
 
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-        if (200..<300).contains(status), let reply = try? JSONDecoder().decode(Reply.self, from: data) {
-            return reply
+        if (200..<300).contains(status) {
+            if let reply = try? JSONDecoder().decode(Reply.self, from: data) { return reply }
+            // Feedback is answered with an empty 204, which is the whole reply.
+            if let nothing = NoReply() as? Reply { return nothing }
         }
         if let problem = try? JSONDecoder().decode(ErrorReply.self, from: data) {
             if problem.error.type == "attestation", status == 401 {
@@ -178,6 +184,9 @@ private struct StudyReply: Decodable, Sendable {
 private struct PlanReply: Decodable, Sendable {
     let plan: GeneratedPlan
 }
+
+/// The reply to a request that answers with nothing but "done".
+private struct NoReply: Decodable, Sendable {}
 
 private struct ErrorReply: Decodable {
     struct Problem: Decodable {

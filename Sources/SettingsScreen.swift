@@ -42,6 +42,14 @@ struct SettingsScreen: View {
                 }
 
                 Section {
+                    NavigationLink("Send feedback or an idea") {
+                        FeedbackScreen()
+                    }
+                } footer: {
+                    Text("Something not working, or a feature you'd love? It goes straight to the person who makes Spindle.")
+                }
+
+                Section {
                     ProfileFields(profile: profile)
                 } header: {
                     Text("Your profile")
