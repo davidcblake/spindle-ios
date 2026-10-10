@@ -154,7 +154,12 @@ stays, because it is what prepares studies and plans for the phone.
 
 ## Phase 4 — TestFlight ⬜
 
-- [ ] Signing, an App Store Connect record, a build uploaded
+- [ ] Signing, an App Store Connect record, a build uploaded (steps in
+      `docs/your-checklist.md` §6)
+      - [x] What Apple checks on upload (2026-10-10): the privacy manifest
+            (`Sources/PrivacyInfo.xcprivacy`), the export-compliance answer in the
+            Info.plist, iPhone only. App Attest was already set to production, and
+            the server accepts both production and development keys
 - [ ] A privacy policy and accurate privacy labels
       - [x] Drafted: the policy at `/privacy` (spindle PR #5, waiting on a
             contact address) and the App Store answers in `docs/app-store.md`
