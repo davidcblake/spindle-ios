@@ -96,6 +96,25 @@ struct GeneratedPlan: Codable, Equatable, Sendable {
 protocol StudyService: Sendable {
     func prepare(_ request: StudyRequest) async throws(StudyFailure) -> Study
     func preparePlan(_ request: PlanRequest) async throws(StudyFailure) -> GeneratedPlan
+    /// Sends a person's feedback or feature request to Dave. Never shown to a
+    /// model (decision `0006` in the Spindle repository).
+    func sendFeedback(_ feedback: Feedback) async throws(StudyFailure)
+}
+
+extension StudyService {
+    /// Only the real server takes feedback; every other service says so.
+    func sendFeedback(_ feedback: Feedback) async throws(StudyFailure) {
+        throw .notYet
+    }
+}
+
+/// Feedback as the server takes it: the person's own words, and nothing else.
+struct Feedback: Codable, Equatable, Sendable {
+    var message: String
+
+    /// The server's limits on what can be sent.
+    static let shortest = 3
+    static let longest = 2000
 }
 
 /// Why a study could not be prepared, in the web app's words where it has them.
