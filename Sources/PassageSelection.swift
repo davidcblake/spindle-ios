@@ -49,10 +49,13 @@ final class PassageSelection {
         }
     }
 
-    /// "Alma 5–7, 32", or empty when nothing is chosen.
-    var reference: String {
-        Scripture.reference(book: book, chapters: chapters, declarations: declarations, in: volume)
+    /// What has been chosen, as a study is prepared from it.
+    var passage: Passage {
+        Passage(volume: volume, book: book, chapters: chapters, declarations: declarations)
     }
+
+    /// "Alma 5–7, 32", or empty when nothing is chosen.
+    var reference: String { passage.reference }
 
     var isEmpty: Bool { chapters.isEmpty && declarations.isEmpty }
 

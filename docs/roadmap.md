@@ -84,7 +84,7 @@ None of this waits on decision `0002`.
 - [x] **The details:** "Feast upon the words of Christ" heads the Prepare
       screen; the 2 Nephi 25:26 footer closes every study
 
-## Phase 2 — The two features that call the server ⬜
+## Phase 2 — The two features that call the server ✅ done on Dave's iPhone (2026-10-10)
 
 **Decision `0002` is made: App Attest** (Dave, 2026-10-06). What blocks this
 phase now is server work in `davidcblake/spindle`, not a decision. Both endpoints of the web app's server (the
@@ -94,11 +94,11 @@ limits on how often someone can use them count rows that a phone saving to
 iCloud never writes.
 
 - [x] `0002` decided: App Attest (Dave, 2026-10-06)
-- [ ] `/api/study` accepts the app: knows the caller is genuine, has its own
+- [x] `/api/study` accepts the app: knows the caller is genuine, has its own
       usage limit per device, and takes the profile in the request, checking it
       and cutting it to a safe length on the server
-- [ ] `/api/plan` the same
-- [ ] **Preparing a study:** a loading state; the study saved before it is
+- [x] `/api/plan` the same
+- [x] **Preparing a study:** a loading state; the study saved before it is
       shown; errors that say what went wrong (no connection, the service
       refused, the study was cut off)
       - [x] The phone's half, against decision `0003`: `StudyService`,
@@ -108,7 +108,7 @@ iCloud never writes.
             is switched on, and the simulator can never use it (no App Attest)
       - [x] The server's half: `/api/app/challenge`, `/register`, `/study`
             (spindle PR #4). Off until SETUP.md §6 in that repository is done
-- [ ] **Plans:** describe what you want, get a plan back, open it, tick items
+- [x] **Plans:** describe what you want, get a plan back, open it, tick items
       off ("3 of 8 complete"), delete with a confirmation
       - [x] The phone's half: `Plan.swift`, `PlansScreen.swift`, the Plans tab,
             plans and their items kept on the phone, both of the web app's
@@ -127,6 +127,23 @@ out of credit, and new installs.
       `Tests/FeedbackTests.swift`. Not yet tried on a phone
 - [ ] Works end to end once Dave has run migration 0006, set `NTFY_TOPIC` in Vercel and
       subscribed in the ntfy app (SETUP.md §7 in `davidcblake/spindle`)
+
+## The first change from the web app: prepare once, refresh on request ✅ built (2026-10-10)
+
+**Decided 2026-10-10 by Dave**, ahead of the copy being finished because each
+study costs money: a study is tailored to the person, so it is prepared for
+them once and kept. Choosing a passage already in the journal opens that study
+instead of preparing it again. The refresh button (↻) on any study prepares a
+fresh one of the same passage on request; the earlier study stays in the
+journal. The web app prepares a new study every time.
+
+Also decided the same day: **the website is no longer needed.** Its server
+stays, because it is what prepares studies and plans for the phone.
+
+- [x] Prepare opens the newest study of exactly that passage, offline too
+- [x] ↻ on the study screen, with an "are you sure" first, since it costs a
+      study. `Preparing.swift`, `Passage` in `Scripture.swift`,
+      `Tests/PreparingTests.swift`. Not yet looked at on a phone
 
 ## Phase 3 — iCloud on ⬜
 
@@ -164,5 +181,4 @@ Ideas that are not in the web app, so they wait:
 
 | Blocker | Blocks | Status |
 |---|---|---|
-| Server support for App Attest (`0002`, decided 2026-10-06) | Phase 2 (preparing a study and Plans) | Not started. Work in `davidcblake/spindle` |
 | CloudKit container + signing | Phase 3 | Container exists; the app has never been signed |
