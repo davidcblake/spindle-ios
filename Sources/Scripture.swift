@@ -145,3 +145,68 @@ struct Book: Hashable, Sendable {
     /// chapter number.
     var hasOneChapter: Bool { chapterCount == 1 }
 }
+
+/// A chosen passage, with nothing left to tap: what a study is prepared from.
+struct Passage: Hashable, Sendable {
+    var volume: Volume
+    var book: Book?
+    var chapters: Set<Int> = []
+    var declarations: Set<String> = []
+
+    /// "Alma 5–7, 32", the words a journal entry keeps.
+    var reference: String {
+        Scripture.reference(book: book, chapters: chapters, declarations: declarations, in: volume)
+    }
+
+    /// The passage a journal entry was prepared from, read back out of its
+    /// words — the reverse of `reference`.
+    ///
+    /// A journal entry keeps only "Alma 5–7, 32" and "Book of Mormon", and a
+    /// fresh study of it has to be asked for the way the Prepare screen asks:
+    /// by volume, book and chapters. Nil for anything this app would not have
+    /// written, rather than a guess the server might prepare the wrong study
+    /// from.
+    init?(reference: String, volume volumeName: String) {
+        guard let volume = Scripture.volumes.first(where: { $0.name == volumeName }) else { return nil }
+        self.volume = volume
+        for piece in reference.components(separatedBy: "; ") {
+            if volume.declarations.contains(piece) {
+                declarations.insert(piece)
+                continue
+            }
+            // Only one book per passage, and declarations come after it.
+            guard book == nil, declarations.isEmpty, let read = Self.read(piece, in: volume) else { return nil }
+            book = read.book
+            chapters = read.chapters
+        }
+        guard !chapters.isEmpty || !declarations.isEmpty else { return nil }
+    }
+
+    init(volume: Volume, book: Book? = nil, chapters: Set<Int> = [], declarations: Set<String> = []) {
+        self.volume = volume
+        self.book = book
+        self.chapters = chapters
+        self.declarations = declarations
+    }
+
+    /// "Alma 5–7, 32" → Alma and its chapters. The longest book name that
+    /// fits wins, so "Joseph Smith—History" is never read as a shorter book.
+    private static func read(_ piece: String, in volume: Volume) -> (book: Book, chapters: Set<Int>)? {
+        for book in volume.books.sorted(by: { $0.name.count > $1.name.count }) {
+            if piece == book.name {
+                return book.hasOneChapter ? (book, [1]) : nil
+            }
+            guard piece.hasPrefix(book.name + " ") else { continue }
+            var chapters: Set<Int> = []
+            for run in piece.dropFirst(book.name.count + 1).components(separatedBy: ", ") {
+                let ends = run.components(separatedBy: "–").map { Int($0) }
+                guard let first = ends.first ?? nil, let last = ends.last ?? nil, ends.count <= 2,
+                      1 <= first, first <= last, last <= book.chapterCount
+                else { return nil }
+                chapters.formUnion(first...last)
+            }
+            return (book, chapters)
+        }
+        return nil
+    }
+}
