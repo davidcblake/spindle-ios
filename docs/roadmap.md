@@ -140,6 +140,9 @@ Ideas that are not in the web app, so they wait:
 - Dictation for My Thoughts through `PPInput`. The keyboard's own microphone
   already works on day one, as it does on the web.
 - A daily reminder (`PPNotify`)
+- Checking studies for invented references and talks: options, sources and
+  permissions noted in `davidcblake/spindle/docs/accuracy-options.md`
+  (2026-10-10, not started)
 - Anything from the spec's v2 list, and the open question in
   `plug-and-play-ios/docs/where-we-are.md`: a study generator, or a
   conversational companion
