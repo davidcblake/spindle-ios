@@ -66,10 +66,43 @@ spindle PR #5 adds the privacy policy at `/privacy`. It needs the address people
 write to; it is a placeholder until then, which is why the PR is not merged. Tell me the
 address and I will finish it.
 
+## 6. TestFlight: put Spindle on other people's phones (~45 min the first time)
+
+**a. App Store Connect record (once).** appstoreconnect.apple.com → Apps → **+** → New App:
+iOS; name `Spindle — Scripture Study`; primary language English (U.S.); bundle ID
+`com.wpv.spindle`; SKU `spindle`; Full Access.
+
+**b. Upload a build (each release).** On the Mac:
+
+```
+cd ~/Documents/spindle-ios
+git pull
+xcodegen generate
+open Spindle.xcodeproj
+```
+
+Choose the team again under Signing & Capabilities. At the top of Xcode, choose
+**Any iOS Device (arm64)** as the destination, then **Product → Archive**. When the
+Organizer opens: **Distribute App → App Store Connect → Distribute**.
+
+Each upload needs a higher build number than the last. `CURRENT_PROJECT_VERSION` in
+`project.yml` is that number; ask and it gets bumped before the next upload.
+
+**c. Test it yourself (internal testing, no review).** App Store Connect → Spindle →
+**TestFlight**. Wait for the build to finish processing (about 15 minutes; Apple emails).
+Add yourself under **Internal Testing**, install **TestFlight** from the App Store, and
+accept the invite.
+
+**d. Invite family and the ward (external testing, one Apple review).** TestFlight →
+**External Testing → +** a group. Fill in the privacy policy URL
+(`https://spindlestudy.vercel.app/privacy`), your contact details, and the "What to
+Test" note from `docs/app-store.md`. Submit for review, which usually takes a day. Then
+send people the **public link**.
+
 ## After that
 
 - **iCloud sync** (roadmap Phase 3). I need the CloudKit container's exact name —
   developer.apple.com → Identifiers → iCloud Containers — it probably reads
   `iCloud.com.wpv.spindle`. Getting it wrong is a crash on launch, so it is not guessed.
-- **TestFlight** (Phase 4). The App Store Connect answers are drafted in
-  `docs/app-store.md`, ready to paste.
+- **The App Store itself**, after TestFlight. The listing and privacy answers are
+  drafted in `docs/app-store.md`, ready to paste.

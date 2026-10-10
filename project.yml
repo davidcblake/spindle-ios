@@ -50,6 +50,10 @@ targets:
         # (.github/workflows/build.yml), so it needs no certificates; turning it
         # off here as well stopped the app installing on a phone at all.
         CODE_SIGN_STYLE: Automatic
+        # iPhone only, as the foundation decided (plug-and-play-ios decision
+        # 0004). An iPad still runs it in iPhone mode. Claiming iPad would mean
+        # supporting every orientation and sending Apple iPad screenshots.
+        TARGETED_DEVICE_FAMILY: "1"
     # App Attest, which is how the study server knows a request comes from a
     # genuine copy of Spindle (decision 0002 in the Spindle repository). The
     # App ID needs the App Attest capability ticked in the developer portal
@@ -67,6 +71,10 @@ targets:
         # "isn't set up on the server yet", which the app shows as it is.
         SpindleServer: https://spindlestudy.vercel.app
         UILaunchScreen: {}
+        # Only Apple's own encryption (HTTPS, App Attest), which is exempt.
+        # Saying so here stops App Store Connect asking on every upload
+        # (docs/app-store.md, Export compliance).
+        ITSAppUsesNonExemptEncryption: false
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
 
