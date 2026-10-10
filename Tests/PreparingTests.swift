@@ -37,7 +37,7 @@ struct PassageTests {
 
     @Test("Anything this app would not have written is refused, not guessed at")
     func refused() {
-        #expect(Passage(reference: "Alma 63", volume: "Book of Mormon") == nil)
+        #expect(Passage(reference: "Alma 64", volume: "Book of Mormon") == nil)
         #expect(Passage(reference: "Alma", volume: "Book of Mormon") == nil)
         #expect(Passage(reference: "Alma 7–5", volume: "Book of Mormon") == nil)
         #expect(Passage(reference: "Alma 32", volume: "Old Testament") == nil)
