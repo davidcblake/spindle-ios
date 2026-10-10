@@ -125,8 +125,8 @@ out of credit, and new installs.
 
 - [x] `FeedbackScreen.swift`, `Feedback` and `sendFeedback` in `StudyService.swift`,
       `Tests/FeedbackTests.swift`. Not yet tried on a phone
-- [ ] Works end to end once Dave has run migration 0006, set `NTFY_TOPIC` in Vercel and
-      subscribed in the ntfy app (SETUP.md §7 in `davidcblake/spindle`)
+- [x] Works end to end on Dave's iPhone (2026-10-10): the first note sent ("Add voice
+      transcription for Journal") was saved on the server and reached ntfy
 
 ## The first change from the web app: prepare once, refresh on request ✅ built (2026-10-10)
 

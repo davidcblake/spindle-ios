@@ -106,7 +106,7 @@ struct PlansScreen: View {
         creating = true
         failure = nil
         defer { creating = false }
-        do {
+        do throws(StudyFailure) {
             let generated = try await studyService.preparePlan(
                 PlanRequest(request: asked, profile: StudyRequest.Reader(Profile.current(in: profiles)))
             )
@@ -114,10 +114,8 @@ struct PlansScreen: View {
             try? context.save()
             request = ""
             opened = plan
-        } catch let error as StudyFailure {
-            failure = error
         } catch {
-            failure = StudyFailure("That plan couldn't be prepared right now — please tap again.", log: String(describing: error))
+            failure = error
         }
     }
 }
