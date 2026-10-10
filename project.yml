@@ -45,10 +45,11 @@ targets:
         MARKETING_VERSION: "0.1"
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_VERSION: "6.0"
-        # Off so CI can build without certificates. Signing happens in Xcode on
-        # Dave's machine, and has to be on before anything reaches a device or
-        # TestFlight -- see README.
-        CODE_SIGNING_ALLOWED: NO
+        # Xcode signs with whichever team is chosen under Signing &
+        # Capabilities. CI turns signing off on its own command line
+        # (.github/workflows/build.yml), so it needs no certificates; turning it
+        # off here as well stopped the app installing on a phone at all.
+        CODE_SIGN_STYLE: Automatic
     # App Attest, which is how the study server knows a request comes from a
     # genuine copy of Spindle (decision 0002 in the Spindle repository). The
     # App ID needs the App Attest capability ticked in the developer portal
