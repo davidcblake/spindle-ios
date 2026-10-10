@@ -50,12 +50,17 @@ extension StudyRequest.Reader {
 
 extension StudyRequest {
     @MainActor
-    init(_ selection: PassageSelection, profile: Profile?) {
-        volumeId = selection.volume.id.rawValue
-        book = selection.chapters.isEmpty ? nil : selection.book?.name
-        chapters = selection.chapters.sorted()
-        extras = selection.volume.declarations.filter { selection.declarations.contains($0) }
+    init(_ passage: Passage, profile: Profile?) {
+        volumeId = passage.volume.id.rawValue
+        book = passage.chapters.isEmpty ? nil : passage.book?.name
+        chapters = passage.chapters.sorted()
+        extras = passage.volume.declarations.filter { passage.declarations.contains($0) }
         self.profile = Reader(profile)
+    }
+
+    @MainActor
+    init(_ selection: PassageSelection, profile: Profile?) {
+        self.init(selection.passage, profile: profile)
     }
 }
 
