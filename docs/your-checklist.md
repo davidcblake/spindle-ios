@@ -68,7 +68,12 @@ address and I will finish it.
 
 ## 6. TestFlight: put Spindle on other people's phones (~45 min the first time)
 
-**a. App Store Connect record (once).** appstoreconnect.apple.com → Apps → **+** → New App:
+**a. App Store Connect record (once).** ✅ Done 2026-10-11, named *Spindle.ai*; App Store
+Connect's first version is 1.0, so `MARKETING_VERSION` in `project.yml` is 1.0 to match.
+Never press **Add for Review** there until the App Store itself is the goal; TestFlight
+does not need it.
+
+Originally: appstoreconnect.apple.com → Apps → **+** → New App:
 iOS; name `Spindle — Scripture Study`; primary language English (U.S.); bundle ID
 `com.wpv.spindle`; SKU `spindle`; Full Access.
 

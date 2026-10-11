@@ -42,7 +42,7 @@ targets:
         # alpha channel removed: App Store Connect refuses an icon that has one,
         # even when nothing in it is transparent.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        MARKETING_VERSION: "0.1"
+        MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         SWIFT_VERSION: "6.0"
         # Xcode signs with whichever team is chosen under Signing &
