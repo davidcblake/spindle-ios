@@ -112,8 +112,10 @@ the "Spindle Redesign" canvas (claude.ai artifact, private to Dave).
       plate, which also changes the PDF; the journal can be searched
 - [x] Installed from Xcode on Dave's iPhone and looked right (2026-10-10)
 - [ ] Checked in dark mode and at a large text size
-- [ ] In TestFlight as 1.0 (3). The 1.0 (1) and 1.0 (2) uploads that night were
-      archives made before the redesign was pulled, so they show the old look
+- [x] Uploaded to App Store Connect as 1.0 (3) (2026-10-10). The 1.0 (1) and
+      1.0 (2) uploads that night were archives made before the redesign was
+      pulled, so they show the old look; give testers 1.0 (3)
+- [ ] 1.0 (3) in the External Testing group, with a public link
 
 ## Phase 2 — The two features that call the server ✅ done on Dave's iPhone (2026-10-10)
 
