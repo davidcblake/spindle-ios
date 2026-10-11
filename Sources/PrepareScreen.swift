@@ -4,13 +4,15 @@ import SwiftUI
 
 /// Choosing a passage: a volume, then a book, then one or more chapters.
 ///
-/// All taps and no typing, as on the web. The selection bar at the bottom
-/// always says what has been chosen, so the person never has to scroll up to
-/// check.
+/// Opened as a sheet from the new-study button on Today and Journal; a study
+/// prepared here opens inside the sheet. All taps and no typing, as on the
+/// web. The selection bar at the bottom always says what has been chosen, so
+/// the person never has to scroll up to check.
 struct PrepareScreen: View {
     @Environment(\.ppTheme) private var theme
     @Environment(\.modelContext) private var context
     @Environment(\.studyService) private var studyService
+    @Environment(\.dismiss) private var dismiss
     @Environment(Connection.self) private var connection: Connection?
     @Query private var profiles: [Profile]
     @State private var selection = PassageSelection()
@@ -26,13 +28,19 @@ struct PrepareScreen: View {
         NavigationStack {
             Group {
                 if let preparing {
-                    PreparingView(reference: preparing)
+                    PreparingView(title: preparing, message: "Searching the scriptures and gathering connections…")
                 } else {
                     chooser
                 }
             }
             .background(theme.background)
-            .navigationTitle("Prepare")
+            .navigationTitle("New study")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
+                }
+            }
             .navigationDestination(item: $prepared) { entry in
                 StudyScreen(entry: entry, hidden: Profile.current(in: profiles)?.hidden ?? [])
             }
@@ -42,13 +50,6 @@ struct PrepareScreen: View {
     private var chooser: some View {
             ScrollView {
                 VStack(alignment: .leading, spacing: PPSpacing.large) {
-                    Text("Feast upon the words of Christ")
-                        .ppText(.sectionTitle)
-                        .foregroundStyle(theme.accent)
-                    Text("Choose a passage and prepare a study that traces its people, principles, and doctrine across all four standard works — and shows how each points to the Savior.")
-                        .ppText(.body)
-                        .foregroundStyle(theme.textSecondary)
-
                     volumes
                     if !selection.volume.skipsChoosingABook {
                         books
@@ -161,7 +162,7 @@ struct PrepareScreen: View {
     private var selectionBar: some View {
         HStack(spacing: PPSpacing.medium) {
             Text(selection.isEmpty ? "Nothing selected yet" : selection.reference)
-                .ppText(.cardTitle)
+                .ppText(selection.isEmpty ? .cardTitle : .scripture)
                 .foregroundStyle(selection.isEmpty ? theme.textSecondary : theme.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityAddTraits(.updatesFrequently)
@@ -251,26 +252,5 @@ private struct Tile: View {
         .disabled(!isChosen && !isAvailable)
         .opacity(!isChosen && !isAvailable ? 0.4 : 1)
         .accessibilityAddTraits(isChosen ? .isSelected : [])
-    }
-}
-
-/// The web app's loading state: the passage, and what is happening to it.
-private struct PreparingView: View {
-    @Environment(\.ppTheme) private var theme
-    let reference: String
-
-    var body: some View {
-        VStack(spacing: PPSpacing.medium) {
-            ProgressView()
-                .controlSize(.large)
-            Text(reference)
-                .ppText(.sectionTitle)
-                .foregroundStyle(theme.textPrimary)
-            Text("Searching the scriptures and gathering connections…")
-                .ppText(.caption)
-                .foregroundStyle(theme.textSecondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityElement(children: .combine)
     }
 }

@@ -63,9 +63,12 @@ struct PlansScreen: View {
                     .buttonStyle(.ppProminent)
                     .disabled(creating || trimmed.count < PlanRequest.shortest || !isOnline)
                     if creating {
-                        Text("Gathering and ordering the right scriptures and talks — broad topics can take up to a minute. Please keep this screen open.")
-                            .ppText(.caption)
-                            .foregroundStyle(theme.textSecondary)
+                        HStack(spacing: PPSpacing.medium) {
+                            Liahona(size: 44)
+                            Text("Gathering and ordering the right scriptures and talks — broad topics can take up to a minute. Please keep this screen open.")
+                                .ppText(.caption)
+                                .foregroundStyle(theme.textSecondary)
+                        }
                     }
                     if !isOnline {
                         Label("Creating a plan needs a connection.", systemImage: "wifi.slash")
@@ -158,19 +161,18 @@ struct PlanScreen: View {
     var body: some View {
         List {
             Section {
-                VStack(alignment: .leading, spacing: PPSpacing.extraSmall) {
-                    Text(plan.title).ppText(.sectionTitle)
-                    Text(plan.progress).ppText(.caption).opacity(0.85)
+                VStack(alignment: .leading, spacing: PPSpacing.small) {
+                    Text(plan.title)
+                        .ppText(.sectionTitle)
+                        .foregroundStyle(theme.textPrimary)
+                    Text(plan.progress)
+                        .ppText(.caption)
+                        .foregroundStyle(theme.textSecondary)
+                    ProgressView(value: Double(plan.completedCount), total: Double(max((plan.items ?? []).count, 1)))
+                        .tint(theme.accent)
+                        .accessibilityHidden(true)
                 }
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(PPSpacing.large)
-                .background(
-                    LinearGradient(colors: [Color(hex: 0x1D2F8F), Color(hex: 0x2B4BD7)], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    in: RoundedRectangle(cornerRadius: PPRadius.large)
-                )
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
+                .padding(.vertical, PPSpacing.extraSmall)
 
                 Text(GospelLibrary.linked(plan.summary))
                     .ppText(.body)

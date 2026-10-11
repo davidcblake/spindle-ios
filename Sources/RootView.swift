@@ -7,23 +7,23 @@ import SwiftUI
 /// "First launch" means there is no profile yet, exactly as on the web, where
 /// a missing profile row is what shows the welcome. Skipping saves an empty
 /// profile, so the welcome never comes back.
+///
+/// Three tabs: Today, Journal and Plans. Starting a study is the round button
+/// on Today and Journal, and Settings is behind the profile button on Today.
 struct RootView: View {
     @Query private var profiles: [Profile]
 
     var body: some View {
         if let profile = Profile.current(in: profiles) {
             TabView {
-                Tab("Prepare", systemImage: "book") {
-                    PrepareScreen()
+                Tab("Today", systemImage: "sun.max") {
+                    TodayScreen(profile: profile)
                 }
-                Tab("Journal", systemImage: "books.vertical") {
+                Tab("Journal", systemImage: "book.closed") {
                     JournalScreen(hidden: profile.hidden)
                 }
                 Tab("Plans", systemImage: "checklist") {
                     PlansScreen()
-                }
-                Tab("Settings", systemImage: "gearshape") {
-                    SettingsScreen(profile: profile)
                 }
             }
         } else {
@@ -60,12 +60,47 @@ struct WelcomeScreen: View {
                 .listRowBackground(Color.clear)
             }
             .tint(theme.accent)
-            .navigationTitle("Welcome")
+            .navigationTitle("Welcome to Spindle")
         }
     }
 
     private func save(_ profile: Profile) {
         profile.createdAt = .now
         context.insert(profile)
+    }
+}
+
+extension View {
+    /// The round button that starts a new study, floating above the tab bar,
+    /// and the sheet it opens.
+    func newStudyButton() -> some View {
+        modifier(NewStudyButton())
+    }
+}
+
+private struct NewStudyButton: ViewModifier {
+    @Environment(\.ppTheme) private var theme
+    @State private var choosing = false
+
+    func body(content: Content) -> some View {
+        content
+            .safeAreaInset(edge: .bottom, alignment: .trailing) {
+                Button {
+                    choosing = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.title2.weight(.semibold))
+                        .foregroundStyle(theme.textOnAccent)
+                        .frame(width: 60, height: 60)
+                        .background(theme.accent, in: Circle())
+                        .shadow(color: .black.opacity(0.18), radius: 12, y: 6)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("New study")
+                .padding(PPSpacing.screenMargin)
+            }
+            .sheet(isPresented: $choosing) {
+                PrepareScreen()
+            }
     }
 }

@@ -6,9 +6,11 @@ import SwiftUI
 /// on, and the profile. The web app's `SettingsTab`.
 ///
 /// Changes save as they are made. There is no Save button because there is no
-/// server to fail: everything here is written to the phone.
+/// server to fail: everything here is written to the phone. Opened as a sheet
+/// from the profile button on Today, so Done only closes it.
 struct SettingsScreen: View {
     @Environment(\.ppTheme) private var theme
+    @Environment(\.dismiss) private var dismiss
     @Bindable var profile: Profile
 
     var body: some View {
@@ -51,6 +53,11 @@ struct SettingsScreen: View {
             }
             .tint(theme.accent)
             .navigationTitle("Settings")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
     }
 }
@@ -62,7 +69,7 @@ struct ProfileFields: View {
     @Bindable var profile: Profile
 
     var body: some View {
-        field("First name", hint: "So your studies can speak to you by name.",
+        field("What should we call you?", hint: "Spindle greets you by this name, and your studies speak to you by it. A nickname is fine.",
               placeholder: "Dave", text: $profile.firstName, limit: 100)
         field("Current calling", hint: "Studies get framed for your service — a Primary teacher and a bishop need different things.",
               placeholder: "Counselor in a stake presidency, Relief Society president, no calling right now…",
