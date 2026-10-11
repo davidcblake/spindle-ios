@@ -4,27 +4,31 @@ import SwiftUI
 // The pieces of a study, as separate views so the same layout draws on the
 // screen and onto the pages of a PDF (`StudyPDF`).
 
-/// The reference plate: the web app's blue gradient card.
+/// The top of a study: which volume and when, then the passage in scripture's
+/// serif, over a hairline. Plain ink on the page, so it prints as it shows.
 struct StudyPlate: View {
+    @Environment(\.ppTheme) private var theme
     let reference: String
     let volume: String
     let date: Date
 
     var body: some View {
-        VStack(alignment: .leading, spacing: PPSpacing.extraSmall) {
-            Text(reference)
-                .ppText(.screenTitle)
+        VStack(alignment: .leading, spacing: PPSpacing.small) {
             Text("\(volume) · \(date.formatted(date: .long, time: .omitted))")
                 .ppText(.caption)
-                .opacity(0.85)
+                .fontWeight(.semibold)
+                .textCase(.uppercase)
+                .tracking(0.8)
+                .foregroundStyle(theme.textSecondary)
+            Text(reference)
+                .ppText(.scriptureTitle)
+                .foregroundStyle(theme.textPrimary)
         }
-        .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(PPSpacing.large)
-        .background(
-            LinearGradient(colors: [Color(hex: 0x1D2F8F), Color(hex: 0x2B4BD7)], startPoint: .topLeading, endPoint: .bottomTrailing),
-            in: RoundedRectangle(cornerRadius: PPRadius.large)
-        )
+        .padding(.bottom, PPSpacing.medium)
+        .overlay(alignment: .bottom) {
+            Rectangle().fill(theme.separator).frame(height: 1)
+        }
         .accessibilityElement(children: .combine)
     }
 }
@@ -113,13 +117,13 @@ struct StudySectionView: View {
                         .foregroundStyle(selectionRing)
                         .accessibilityHidden(true)
                     Text(GospelLibrary.linked(study.anchor))
-                        .ppText(.cardTitle)
+                        .ppText(.scripture)
                         .multilineTextAlignment(.center)
                 }
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding(PPSpacing.large)
-                .background(Color(hex: 0x171A23), in: RoundedRectangle(cornerRadius: PPRadius.medium))
+                .background(verseBlock, in: RoundedRectangle(cornerRadius: PPRadius.large))
             }
         }
     }
@@ -175,17 +179,5 @@ struct StudyFooter: View {
         .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity)
         .padding(.top, PPSpacing.medium)
-    }
-}
-
-extension Color {
-    /// The web app's deep blue and near-black, used only where the web app
-    /// uses them: the reference plate and the anchor block.
-    init(hex: UInt32) {
-        self.init(
-            red: Double((hex >> 16) & 0xFF) / 255,
-            green: Double((hex >> 8) & 0xFF) / 255,
-            blue: Double(hex & 0xFF) / 255
-        )
     }
 }

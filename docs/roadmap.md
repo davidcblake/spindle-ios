@@ -4,7 +4,7 @@
 commit as the work it describes. If it says something is done, it is done on a
 device — not "the code is written".
 
-Last updated: 2026-10-10
+Last updated: 2026-10-11
 
 ## Phase 0 — It builds ✅ done (2026-09-07)
 
@@ -81,8 +81,36 @@ None of this waits on decision `0002`.
 - [x] **Offline:** Prepare explains why it cannot run and the button is
       off; everything already saved still works. `Connection.swift`. The web
       app's header badge is not copied: on a phone, only Prepare cares
-- [x] **The details:** "Feast upon the words of Christ" heads the Prepare
-      screen; the 2 Nephi 25:26 footer closes every study
+- [x] **The details:** the 2 Nephi 25:26 footer closes every study.
+      "Feast upon the words of Christ" headed the Prepare screen until the
+      new look below, which leaves it out
+
+## The new look: "Quiet Light" ⬜ built, not yet seen on a phone
+
+**Decided 2026-10-11 by Dave:** a cleaner, more personal design, kept close to
+the original — the same blue and the iPhone's own font. The one exception
+Dave chose on purpose to the "nothing new until the copy is finished" rule:
+it changes how the app looks and is arranged, not what it does. The design is
+the "Spindle Redesign" canvas (claude.ai artifact, private to Dave).
+
+- [x] Colors refined in `SpindleTheme.swift`: a warm white page, near-black
+      ink, Spindle's blue a step deeper. The foundation's own text styles are
+      unchanged; Apple's serif (New York) is added for scripture only — verses
+      and passage names (`PPTextStyle.scripture`)
+- [x] Three tabs, **Today · Journal · Plans**. Settings moved behind the
+      profile button on Today; Prepare became **New study**, a sheet opened by
+      the round + button on Today and Journal
+- [x] **Today** (`TodayScreen.swift`): "Hey Dave." from the profile's name,
+      "What do you want to study today?", the verse from the last study, and
+      the next session of the plan in progress
+- [x] The welcome asks "What should we call you?", so a nickname works
+- [x] **The Liahona** (`Liahona.swift`) while a study or a plan is prepared:
+      a brass ring with two spindles, one searching for the way, with
+      1 Nephi 16:28 beneath. Still when Reduce Motion is on. A form that fills
+      the ring to show progress is built but unused: the server reports none
+- [x] Studies open on the passage in serif instead of the blue gradient
+      plate, which also changes the PDF; the journal can be searched
+- [ ] Looked at on a phone, in light and dark, at a large text size
 
 ## Phase 2 — The two features that call the server ✅ done on Dave's iPhone (2026-10-10)
 

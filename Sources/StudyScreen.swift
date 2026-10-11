@@ -66,7 +66,7 @@ struct StudyScreen: View {
         }
         .overlay {
             if refreshing {
-                PreparingView(reference: entry.reference)
+                PreparingView(title: entry.reference, message: "Searching the scriptures and gathering connections…")
                     .background(theme.background)
             }
         }

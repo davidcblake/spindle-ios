@@ -43,7 +43,7 @@ targets:
         # even when nothing in it is transparent.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "1"
+        CURRENT_PROJECT_VERSION: "2"
         SWIFT_VERSION: "6.0"
         # Xcode signs with whichever team is chosen under Signing &
         # Capabilities. CI turns signing off on its own command line
