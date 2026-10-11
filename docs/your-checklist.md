@@ -73,6 +73,10 @@ Connect's first version is 1.0, so `MARKETING_VERSION` in `project.yml` is 1.0 t
 Never press **Add for Review** there until the App Store itself is the goal; TestFlight
 does not need it.
 
+Builds 0.1 (1) and 0.1 (2), the Quiet Light redesign, were uploaded from another session
+on 2026-10-11 and are on Dave's phone through TestFlight. From here the version is 1.0,
+and the next upload is build 3.
+
 Originally: appstoreconnect.apple.com → Apps → **+** → New App:
 iOS; name `Spindle — Scripture Study`; primary language English (U.S.); bundle ID
 `com.wpv.spindle`; SKU `spindle`; Full Access.
