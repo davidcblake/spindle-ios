@@ -90,7 +90,7 @@ xcodegen generate
 open Spindle.xcodeproj
 ```
 
-Choose the team again under Signing & Capabilities. At the top of Xcode, choose
+The team is set in `project.yml`, so there is nothing to choose. At the top of Xcode, choose
 **Any iOS Device (arm64)** as the destination, then **Product → Archive**. When the
 Organizer opens: **Distribute App → App Store Connect → Distribute**.
 
