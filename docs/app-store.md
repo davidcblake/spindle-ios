@@ -43,7 +43,7 @@ the Church.
 
 | Apple's data type | Why it is declared | Purpose | Linked to the person? | Used for tracking? |
 |---|---|---|---|---|
-| **User Content → Other User Content** | Preparing a study or plan sends the passage or request and the profile text to the server and to Anthropic. The server keeps none of it, but Anthropic may hold it briefly under its own terms, which is enough to count | App Functionality | No | No |
+| **User Content → Other User Content** | Preparing a study or plan sends the passage or request and the profile text to the server and to Anthropic. The server keeps none of it, but Anthropic may hold it briefly under its own terms, which is enough to count. Feedback sent from Settings is kept on the server and sent to Dave's phone through ntfy.sh (added 2026-10-10) | App Functionality | No | No |
 | **Identifiers → Device ID** | The App Attest key id, kept with the times it was used, for hourly limits | App Functionality (preventing fraud) | No | No |
 
 **Not declared, and why:**
@@ -58,9 +58,12 @@ the Church.
 ## Export compliance
 
 The app uses only Apple's built-in encryption (HTTPS, App Attest). In App Store Connect
-answer **"None of the algorithms mentioned above"** / exempt. Adding
-`ITSAppUsesNonExemptEncryption = NO` to `project.yml` will stop the question appearing on
-every upload; not done yet because it is a legal statement, which is Dave's to make.
+answer **"None of the algorithms mentioned above"** / exempt. `ITSAppUsesNonExemptEncryption = NO` is in `project.yml`
+(2026-10-10, on Dave's go-ahead to get TestFlight running), so the question no longer
+appears on every upload.
+
+The same answers are in `Sources/PrivacyInfo.xcprivacy`, the privacy manifest Apple reads
+on upload. Change both together.
 
 ## TestFlight
 
