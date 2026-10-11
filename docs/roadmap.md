@@ -85,7 +85,7 @@ None of this waits on decision `0002`.
       "Feast upon the words of Christ" headed the Prepare screen until the
       new look below, which leaves it out
 
-## The new look: "Quiet Light" ⬜ built, not yet seen on a phone
+## The new look: "Quiet Light" ✅ on Dave's iPhone (2026-10-10)
 
 **Decided 2026-10-11 by Dave:** a cleaner, more personal design, kept close to
 the original — the same blue and the iPhone's own font. The one exception
@@ -110,7 +110,10 @@ the "Spindle Redesign" canvas (claude.ai artifact, private to Dave).
       the ring to show progress is built but unused: the server reports none
 - [x] Studies open on the passage in serif instead of the blue gradient
       plate, which also changes the PDF; the journal can be searched
-- [ ] Looked at on a phone, in light and dark, at a large text size
+- [x] Installed from Xcode on Dave's iPhone and looked right (2026-10-10)
+- [ ] Checked in dark mode and at a large text size
+- [ ] In TestFlight as 1.0 (3). The 1.0 (1) and 1.0 (2) uploads that night were
+      archives made before the redesign was pulled, so they show the old look
 
 ## Phase 2 — The two features that call the server ✅ done on Dave's iPhone (2026-10-10)
 
