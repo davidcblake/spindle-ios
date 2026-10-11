@@ -15,6 +15,18 @@ struct JournalScreen: View {
     var hidden: Set<StudySection> = []
     /// The entry waiting on "are you sure?" before it is deleted.
     @State private var deleting: JournalEntry?
+    @State private var search = ""
+
+    /// Entries whose passage, verse or thoughts contain what was typed.
+    private var shown: [JournalEntry] {
+        let query = search.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return entries }
+        return entries.filter { entry in
+            entry.reference.localizedStandardContains(query)
+                || entry.anchor.localizedStandardContains(query)
+                || (entry.thoughts ?? []).contains { $0.body.localizedStandardContains(query) }
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -27,8 +39,15 @@ struct JournalScreen: View {
                     )
                 } else {
                     list
+                        .searchable(text: $search, prompt: "Search passages and thoughts")
+                        .overlay {
+                            if shown.isEmpty {
+                                ContentUnavailableView.search(text: search)
+                            }
+                        }
                 }
             }
+            .newStudyButton()
             .navigationTitle("Journal")
             .navigationDestination(for: JournalEntry.self) { entry in
                 StudyScreen(entry: entry, hidden: hidden)
@@ -50,7 +69,7 @@ struct JournalScreen: View {
     }
 
     private var list: some View {
-        List(entries) { entry in
+        List(shown) { entry in
             NavigationLink(value: entry) {
                 row(entry)
             }
@@ -68,14 +87,14 @@ struct JournalScreen: View {
     private func row(_ entry: JournalEntry) -> some View {
         VStack(alignment: .leading, spacing: PPSpacing.extraSmall) {
             Text(entry.reference)
-                .ppText(.cardTitle)
+                .ppText(.scripture)
                 .foregroundStyle(theme.textPrimary)
             Text(entry.createdAt.formatted(.dateTime.weekday(.abbreviated).month(.wide).day().year()))
                 .ppText(.caption)
                 .foregroundStyle(theme.textSecondary)
             if !entry.anchor.isEmpty {
                 Text("“\(entry.anchor)”")
-                    .ppText(.caption)
+                    .ppText(.scriptureQuote)
                     .italic()
                     .foregroundStyle(theme.textSecondary)
                     .lineLimit(2)
