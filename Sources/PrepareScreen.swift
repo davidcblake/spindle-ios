@@ -64,7 +64,7 @@ struct PrepareScreen: View {
                             .foregroundStyle(theme.textSecondary)
                     }
                     if !isOnline {
-                        Label("You're offline — preparing a new study needs a connection, but your journal is fully readable.", systemImage: "wifi.slash")
+                        Label("You're offline — preparing a new study needs a connection, but your journal and every passage you've already studied are fully readable.", systemImage: "wifi.slash")
                             .ppText(.caption)
                             .foregroundStyle(theme.textSecondary)
                     }
@@ -80,30 +80,26 @@ struct PrepareScreen: View {
             .safeAreaInset(edge: .bottom) { selectionBar }
     }
 
-    /// Asks for the study, saves it to the journal, and only then shows it —
-    /// the web app's promise that a prepared study is never only on screen.
+    /// Opens the study of this passage already in the journal, or prepares
+    /// one if there isn't one yet (`Preparing.swift`).
     private func prepare() async {
-        let request = StudyRequest(selection, profile: Profile.current(in: profiles))
-        let reference = selection.reference
-        let volume = selection.volume.name
+        let passage = selection.passage
         failure = nil
-        preparing = reference
+        if let saved = JournalEntry.latest(of: passage, in: context) {
+            prepared = saved
+            return
+        }
+        preparing = passage.reference
         defer { preparing = nil }
-        do {
-            let study = try await studyService.prepare(request)
-            let entry = JournalEntry(
-                reference: reference,
-                volume: volume,
-                anchor: study.anchor,
-                content: try JSONEncoder().encode(study)
+        do throws(StudyFailure) {
+            prepared = try await JournalEntry.prepare(
+                passage,
+                profile: Profile.current(in: profiles),
+                using: studyService,
+                in: context
             )
-            context.insert(entry)
-            try context.save()
-            prepared = entry
-        } catch let error as StudyFailure {
-            failure = error
         } catch {
-            failure = StudyFailure("The study was prepared but couldn't be saved — tap again.", log: String(describing: error))
+            failure = error
         }
     }
 
@@ -171,7 +167,8 @@ struct PrepareScreen: View {
             }
             .buttonStyle(.ppProminent)
             .fixedSize()
-            .disabled(selection.isEmpty || !isOnline)
+            // Offline is fine when the journal already has this passage.
+            .disabled(selection.isEmpty || (!isOnline && JournalEntry.latest(of: selection.passage, in: context) == nil))
         }
         .padding(PPSpacing.screenMargin)
         .background(theme.surface)

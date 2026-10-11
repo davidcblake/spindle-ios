@@ -112,7 +112,7 @@ the "Spindle Redesign" canvas (claude.ai artifact, private to Dave).
       plate, which also changes the PDF; the journal can be searched
 - [ ] Looked at on a phone, in light and dark, at a large text size
 
-## Phase 2 — The two features that call the server ⬜
+## Phase 2 — The two features that call the server ✅ done on Dave's iPhone (2026-10-10)
 
 **Decision `0002` is made: App Attest** (Dave, 2026-10-06). What blocks this
 phase now is server work in `davidcblake/spindle`, not a decision. Both endpoints of the web app's server (the
@@ -122,11 +122,11 @@ limits on how often someone can use them count rows that a phone saving to
 iCloud never writes.
 
 - [x] `0002` decided: App Attest (Dave, 2026-10-06)
-- [ ] `/api/study` accepts the app: knows the caller is genuine, has its own
+- [x] `/api/study` accepts the app: knows the caller is genuine, has its own
       usage limit per device, and takes the profile in the request, checking it
       and cutting it to a safe length on the server
-- [ ] `/api/plan` the same
-- [ ] **Preparing a study:** a loading state; the study saved before it is
+- [x] `/api/plan` the same
+- [x] **Preparing a study:** a loading state; the study saved before it is
       shown; errors that say what went wrong (no connection, the service
       refused, the study was cut off)
       - [x] The phone's half, against decision `0003`: `StudyService`,
@@ -136,12 +136,42 @@ iCloud never writes.
             is switched on, and the simulator can never use it (no App Attest)
       - [x] The server's half: `/api/app/challenge`, `/register`, `/study`
             (spindle PR #4). Off until SETUP.md §6 in that repository is done
-- [ ] **Plans:** describe what you want, get a plan back, open it, tick items
+- [x] **Plans:** describe what you want, get a plan back, open it, tick items
       off ("3 of 8 complete"), delete with a confirmation
       - [x] The phone's half: `Plan.swift`, `PlansScreen.swift`, the Plans tab,
             plans and their items kept on the phone, both of the web app's
             "AI-prepared" reminders. Works once the server half is switched on
       - [x] The server's half: `/api/app/plan` (spindle PR #4)
+
+## Feedback from inside the app ✅ built (2026-10-10)
+
+**Asked for by Dave on 2026-10-10.** Settings → *Send feedback or an idea*. The note goes
+to the server's `/api/app/feedback`, which is attested and limited per hour like a
+study. The server keeps it and pushes it to Dave's phone through ntfy. Decision `0006`
+in `davidcblake/spindle` covers this and the server's other alerts: failures, running
+out of credit, and new installs.
+
+- [x] `FeedbackScreen.swift`, `Feedback` and `sendFeedback` in `StudyService.swift`,
+      `Tests/FeedbackTests.swift`. Not yet tried on a phone
+- [x] Works end to end on Dave's iPhone (2026-10-10): the first note sent ("Add voice
+      transcription for Journal") was saved on the server and reached ntfy
+
+## The first change from the web app: prepare once, refresh on request ✅ built (2026-10-10)
+
+**Decided 2026-10-10 by Dave**, ahead of the copy being finished because each
+study costs money: a study is tailored to the person, so it is prepared for
+them once and kept. Choosing a passage already in the journal opens that study
+instead of preparing it again. The refresh button (↻) on any study prepares a
+fresh one of the same passage on request; the earlier study stays in the
+journal. The web app prepares a new study every time.
+
+Also decided the same day: **the website is no longer needed.** Its server
+stays, because it is what prepares studies and plans for the phone.
+
+- [x] Prepare opens the newest study of exactly that passage, offline too
+- [x] ↻ on the study screen, with an "are you sure" first, since it costs a
+      study. `Preparing.swift`, `Passage` in `Scripture.swift`,
+      `Tests/PreparingTests.swift`. Not yet looked at on a phone
 
 ## Phase 3 — iCloud on ⬜
 
@@ -152,7 +182,12 @@ iCloud never writes.
 
 ## Phase 4 — TestFlight ⬜
 
-- [ ] Signing, an App Store Connect record, a build uploaded
+- [ ] Signing, an App Store Connect record, a build uploaded (steps in
+      `docs/your-checklist.md` §6)
+      - [x] What Apple checks on upload (2026-10-10): the privacy manifest
+            (`Sources/PrivacyInfo.xcprivacy`), the export-compliance answer in the
+            Info.plist, iPhone only. App Attest was already set to production, and
+            the server accepts both production and development keys
 - [ ] A privacy policy and accurate privacy labels
       - [x] Drafted: the policy at `/privacy` (spindle PR #5, waiting on a
             contact address) and the App Store answers in `docs/app-store.md`
@@ -179,5 +214,4 @@ Ideas that are not in the web app, so they wait:
 
 | Blocker | Blocks | Status |
 |---|---|---|
-| Server support for App Attest (`0002`, decided 2026-10-06) | Phase 2 (preparing a study and Plans) | Not started. Work in `davidcblake/spindle` |
 | CloudKit container + signing | Phase 3 | Container exists; the app has never been signed |

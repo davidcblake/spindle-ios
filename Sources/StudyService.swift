@@ -50,12 +50,17 @@ extension StudyRequest.Reader {
 
 extension StudyRequest {
     @MainActor
-    init(_ selection: PassageSelection, profile: Profile?) {
-        volumeId = selection.volume.id.rawValue
-        book = selection.chapters.isEmpty ? nil : selection.book?.name
-        chapters = selection.chapters.sorted()
-        extras = selection.volume.declarations.filter { selection.declarations.contains($0) }
+    init(_ passage: Passage, profile: Profile?) {
+        volumeId = passage.volume.id.rawValue
+        book = passage.chapters.isEmpty ? nil : passage.book?.name
+        chapters = passage.chapters.sorted()
+        extras = passage.volume.declarations.filter { passage.declarations.contains($0) }
         self.profile = Reader(profile)
+    }
+
+    @MainActor
+    init(_ selection: PassageSelection, profile: Profile?) {
+        self.init(selection.passage, profile: profile)
     }
 }
 
@@ -91,6 +96,25 @@ struct GeneratedPlan: Codable, Equatable, Sendable {
 protocol StudyService: Sendable {
     func prepare(_ request: StudyRequest) async throws(StudyFailure) -> Study
     func preparePlan(_ request: PlanRequest) async throws(StudyFailure) -> GeneratedPlan
+    /// Sends a person's feedback or feature request to Dave. Never shown to a
+    /// model (decision `0006` in the Spindle repository).
+    func sendFeedback(_ feedback: Feedback) async throws(StudyFailure)
+}
+
+extension StudyService {
+    /// Only the real server takes feedback; every other service says so.
+    func sendFeedback(_ feedback: Feedback) async throws(StudyFailure) {
+        throw .notYet
+    }
+}
+
+/// Feedback as the server takes it: the person's own words, and nothing else.
+struct Feedback: Codable, Equatable, Sendable {
+    var message: String
+
+    /// The server's limits on what can be sent.
+    static let shortest = 3
+    static let longest = 2000
 }
 
 /// Why a study could not be prepared, in the web app's words where it has them.
