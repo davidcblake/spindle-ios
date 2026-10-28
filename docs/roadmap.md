@@ -115,7 +115,8 @@ the "Spindle Redesign" canvas (claude.ai artifact, private to Dave).
 - [x] Uploaded to App Store Connect as 1.0 (3) (2026-10-10). The 1.0 (1) and
       1.0 (2) uploads that night were archives made before the redesign was
       pulled, so they show the old look; give testers 1.0 (3)
-- [ ] 1.0 (3) in the External Testing group, with a public link
+- [ ] 1.0 (3) in the External Testing group, with a public link (or 1.0 (4),
+      which adds Speak, if it is uploaded first)
 
 ## Phase 2 — The two features that call the server ✅ done on Dave's iPhone (2026-10-10)
 
@@ -161,6 +162,28 @@ out of credit, and new installs.
 - [x] Works end to end on Dave's iPhone (2026-10-10): the first note sent ("Add voice
       transcription for Journal") was saved on the server and reached ntfy
 
+## Speaking a thought ⬜ built, not yet tried on a phone
+
+**Asked for in Dave's first feedback note** ("Add voice transcription for Journal"), and
+started 2026-10-28 on his go-ahead. A **Speak** button beside "Add to my journal" on
+every study: say the thought and it is written into the box, after anything already
+typed, to read over before adding.
+
+- [x] Through the foundation's `PPInput` `Transcriber` seam (already in `0.1.0`), injected
+      in `SpindleApp.swift`. Spindle's implementation, `OnDeviceTranscriber.swift`, uses
+      `SFSpeechRecognizer` **on the phone only**: no audio or words leave it, so
+      `docs/app-store.md`'s privacy answers do not change
+- [x] Why not wait for the foundation's own implementation: its decision `0016` plans it
+      on `SpeechAnalyzer`, which needs iOS 26, and allows an older-API version only when
+      an app needs one. Spindle does: it runs on iOS 18, and family and ward phones are
+      not all on 26. When the foundation's exists, only that one file changes
+- [x] Where a phone cannot recognize speech on its own, there is no Speak button; the
+      keyboard's microphone still works. Asks for the microphone and speech recognition
+      only when Speak is first tapped
+- [x] Build 4, for the next upload
+- [ ] Tried on a phone: permission prompts, a long thought, Stop, leaving the screen
+      while listening
+
 ## The first change from the web app: prepare once, refresh on request ✅ built (2026-10-10)
 
 **Decided 2026-10-10 by Dave**, ahead of the copy being finished because each
@@ -205,8 +228,6 @@ stays, because it is what prepares studies and plans for the phone.
 
 Ideas that are not in the web app, so they wait:
 
-- Dictation for My Thoughts through `PPInput`. The keyboard's own microphone
-  already works on day one, as it does on the web.
 - A daily reminder (`PPNotify`)
 - Checking studies for invented references and talks: options, sources and
   permissions noted in `davidcblake/spindle/docs/accuracy-options.md`

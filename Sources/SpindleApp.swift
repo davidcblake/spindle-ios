@@ -1,6 +1,7 @@
 import PPCore
 import PPData
 import PPDesign
+import PPInput
 import SwiftData
 import SwiftUI
 
@@ -29,6 +30,9 @@ struct SpindleApp: App {
         return AppAttestStudyService(server: server)
     }()
 
+    /// Speaking a thought, recognized on the phone (`OnDeviceTranscriber`).
+    private let transcriber: any Transcriber = OnDeviceTranscriber()
+
     init() {
         journal = Result {
             // On this device only, for now. Sync turns on with `.synced` once
@@ -54,6 +58,7 @@ struct SpindleApp: App {
                 .tint(PPTheme.spindle.accent)
                 .environment(connection)
                 .environment(\.studyService, studyService)
+                .transcriber(transcriber)
                 .modelContainer(container)
         case .failure(let error):
             PPErrorView(error: CouldNotOpenTheJournal(logMessage: String(describing: error)))
