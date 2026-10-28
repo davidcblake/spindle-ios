@@ -48,6 +48,10 @@ the Church.
 
 **Not declared, and why:**
 
+- *Audio, and the words spoken in Speak:* recognized on the phone only
+  (`requiresOnDeviceRecognition` in `Sources/OnDeviceTranscriber.swift`). No audio or
+  transcript is sent anywhere until the person adds the thought to their journal, which
+  stays on the phone. The microphone is used only while Speak is on.
 - *Name, email, contact info:* never asked for.
 - *The journal, thoughts, plans, profile at rest:* on the phone, and later in the person's
   own iCloud, which Apple does not count as collection because Spindle cannot read it.
@@ -72,8 +76,10 @@ on upload. Change both together.
 - **External testing** (the ward): needs the privacy URL, a short "What to Test" note, and
   a one-time beta review by Apple, usually a day.
 
-Draft "What to Test":
+Draft "What to Test" (updated 2026-10-28 for the new look and speaking a thought):
 
-> Prepare a study of a passage you are reading this week. Open it again from the Journal
-> the next day, with your phone in airplane mode. Add a thought. Try a study plan. Tell
-> Dave anything that confused you or that the web version did better.
+> Welcome to Spindle! Tap the round + button and choose a passage you are reading this
+> week; Spindle prepares a study of it. At the bottom of the study, tap Speak and say
+> what stood out to you, then add it to your journal. Tomorrow, open Today: your verse
+> and your plan are waiting. Try making a study plan in the Plans tab. Tell Dave
+> anything that confused you, using Settings › Send feedback or an idea.

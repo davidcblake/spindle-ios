@@ -35,6 +35,8 @@ targets:
         product: PPData
       - package: PlugAndPlay
         product: PPDesign
+      - package: PlugAndPlay
+        product: PPInput
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.wpv.spindle
@@ -43,7 +45,7 @@ targets:
         # even when nothing in it is transparent.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "3"
+        CURRENT_PROJECT_VERSION: "4"
         SWIFT_VERSION: "6.0"
         # Signs as Dave's team. Named here because `xcodegen generate` rebuilds
         # the project and forgets a team picked under Signing & Capabilities,
@@ -78,6 +80,10 @@ targets:
         # Saying so here stops App Store Connect asking on every upload
         # (docs/app-store.md, Export compliance).
         ITSAppUsesNonExemptEncryption: false
+        # Speaking a thought (Sources/Dictation.swift). Recognition runs on the
+        # phone only, so these are the whole story: nothing is sent anywhere.
+        NSMicrophoneUsageDescription: Spindle listens only while you tap Speak, so you can say a thought instead of typing it.
+        NSSpeechRecognitionUsageDescription: Spindle turns what you say into words on your iPhone. Nothing you say leaves it.
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
 

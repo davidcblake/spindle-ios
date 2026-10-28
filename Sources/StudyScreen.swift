@@ -1,4 +1,5 @@
 import PPDesign
+import PPInput
 import SwiftData
 import SwiftUI
 
@@ -16,9 +17,16 @@ struct StudyScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(\.studyService) private var studyService
     @Environment(Connection.self) private var connection: Connection?
+    @Environment(\.transcriber) private var transcriber
     @Query private var profiles: [Profile]
     /// A thought being written, not yet saved.
     @State private var draft = ""
+    /// Whether this phone can turn speech into words on its own. Until it is
+    /// known, and where it cannot, there is no Speak button.
+    @State private var canSpeak = false
+    @State private var isListening = false
+    /// Why speaking did not work, in words for a person.
+    @State private var speechProblem: String?
     /// The study on screen: the one opened, until a fresh one replaces it.
     @State private var entry: JournalEntry
     @State private var askingToRefresh = false
@@ -113,8 +121,8 @@ struct StudyScreen: View {
     }
 
     /// My Thoughts: the person's own notes, oldest first, then a place to add
-    /// another. The keyboard's microphone works here, which is how the web
-    /// app suggests dictating.
+    /// another, typed or spoken. Speaking goes through the foundation's
+    /// `Transcriber` (`OnDeviceTranscriber`, recognized on the phone).
     private var thoughts: some View {
         VStack(alignment: .leading, spacing: PPSpacing.small) {
             Text("MY THOUGHTS")
@@ -146,11 +154,14 @@ struct StudyScreen: View {
                 .background(theme.surface, in: RoundedRectangle(cornerRadius: PPRadius.medium))
             }
             TextField(
-                "What stood out? What is the Spirit teaching you? Type, or tap the mic on your keyboard and speak…",
+                canSpeak
+                    ? "What stood out? What is the Spirit teaching you? Type, or tap Speak and say it…"
+                    : "What stood out? What is the Spirit teaching you? Type, or tap the mic on your keyboard and speak…",
                 text: $draft,
                 axis: .vertical
             )
             .lineLimit(3...)
+            .disabled(isListening)
             .ppText(.body)
             .padding(PPSpacing.medium)
             .background(theme.surface, in: RoundedRectangle(cornerRadius: PPRadius.medium))
@@ -159,17 +170,63 @@ struct StudyScreen: View {
                 // The web app's limit, so a thought is the same size in both.
                 if text.count > Self.longestThought { draft = String(text.prefix(Self.longestThought)) }
             }
-            Button("Add to my journal", systemImage: "pencil.line") {
-                addThought()
+            if let speechProblem {
+                Text(speechProblem)
+                    .ppText(.caption)
+                    .foregroundStyle(theme.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .buttonStyle(.ppQuiet)
-            .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            HStack(spacing: PPSpacing.small) {
+                if canSpeak {
+                    Button(isListening ? "Stop" : "Speak", systemImage: isListening ? "stop.circle.fill" : "mic") {
+                        toggleSpeaking()
+                    }
+                    .buttonStyle(.ppQuiet)
+                    .accessibilityHint(isListening ? "Stops listening" : "Say your thought out loud and Spindle writes it down")
+                }
+                Button("Add to my journal", systemImage: "pencil.line") {
+                    addThought()
+                }
+                .buttonStyle(.ppQuiet)
+                .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+        }
+        .task { canSpeak = await transcriber.readiness() != .unavailable }
+        .onDisappear { transcriber.stopDictation() }
+    }
+
+    /// Starts listening, adding what is heard after whatever was already
+    /// typed, or stops if already listening.
+    private func toggleSpeaking() {
+        if isListening {
+            transcriber.stopDictation()
+            return
+        }
+        speechProblem = nil
+        isListening = true
+        let typed = draft
+        Task {
+            defer { isListening = false }
+            do {
+                for await heard in try await transcriber.startDictation() {
+                    // Adding the thought ends listening; words still on their
+                    // way must not refill the emptied box.
+                    guard isListening else { break }
+                    draft = SpokenThought.joined(typed, heard.text)
+                }
+            } catch let failure as InputFailure {
+                speechProblem = failure.userMessage
+            } catch {
+                speechProblem = "Spindle couldn't start listening. Try again in a moment."
+            }
         }
     }
 
     private static let longestThought = 10_000
 
     private func addThought() {
+        isListening = false
+        transcriber.stopDictation()
         let body = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !body.isEmpty else { return }
         let thought = Thought(body: body)
