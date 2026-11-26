@@ -45,7 +45,7 @@ targets:
         # even when nothing in it is transparent.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "5"
+        CURRENT_PROJECT_VERSION: "6"
         SWIFT_VERSION: "6.0"
         # Signs as Dave's team. Named here because `xcodegen generate` rebuilds
         # the project and forgets a team picked under Signing & Capabilities,
@@ -71,6 +71,11 @@ targets:
       path: Info.plist
       properties:
         CFBundleDisplayName: Spindle
+        # XcodeGen writes a fixed "1.0" and "1" into a generated Info.plist
+        # unless told otherwise, so every archive read 1.0 (1) whatever the
+        # build settings above said. These make it read them.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         # Where studies and plans are prepared. Until the server's half is
         # set up (SETUP.md section 6 in the Spindle repository), it answers
         # "isn't set up on the server yet", which the app shows as it is.
