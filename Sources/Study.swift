@@ -32,6 +32,10 @@ struct Study: Codable, Hashable, Sendable {
         var talk: String
         var session: String
         var point: String
+        /// The talk's own Gospel Library address, which the server adds from
+        /// its list of real talks (`src/lib/talks.ts` in the Spindle
+        /// repository). Studies saved before that list existed have none.
+        var url: String? = nil
     }
 
     struct CrossReference: Codable, Hashable, Sendable {

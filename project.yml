@@ -45,7 +45,7 @@ targets:
         # even when nothing in it is transparent.
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "4"
+        CURRENT_PROJECT_VERSION: "5"
         SWIFT_VERSION: "6.0"
         # Signs as Dave's team. Named here because `xcodegen generate` rebuilds
         # the project and forgets a team picked under Signing & Capabilities,

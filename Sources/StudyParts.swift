@@ -79,7 +79,7 @@ struct StudySectionView: View {
                         VStack(alignment: .leading, spacing: PPSpacing.extraSmall) {
                             Text(talk.speaker).ppText(.cardTitle)
                             paragraph(talk.point)
-                            Link("“\(talk.talk)” · \(talk.session)", destination: GospelLibrary.searchURL(speaker: talk.speaker, talk: talk.talk))
+                            Link("“\(talk.talk)” · \(talk.session)", destination: GospelLibrary.link(for: talk))
                                 .ppText(.caption)
                                 .fontWeight(.semibold)
                         }
