@@ -162,6 +162,24 @@ out of credit, and new installs.
 - [x] Works end to end on Dave's iPhone (2026-10-10): the first note sent ("Add voice
       transcription for Journal") was saved on the server and reached ntfy
 
+## Only real conference talks, linked straight to the talk ⬜ built, not yet on a phone
+
+**Asked for by Dave on 2026-11-26**, after phantom talks ("The Atonement and Repentance",
+"Christ and the New Covenant") and a wrong date ("Let God Prevail", October 2018 for
+October 2020) reached his phone, and talk links opened a search instead of the talk.
+
+- [x] The server checks every study's talks against a list of every real general
+      conference talk since 1971 (davidcblake/spindle PR #12, option B in its
+      `docs/accuracy-options.md`). A talk not on the list is retried once on the stronger
+      model and then left out. **This needs no app update**: it starts working for every
+      phone when that PR is merged and Vercel deploys
+- [x] A real talk carries its own Gospel Library address (`Study.Talk.url`), and the app
+      opens it directly (`GospelLibrary.link(for:)`). Studies saved before have no address
+      and still open the search. Only churchofjesuschrist.org addresses are ever opened
+- [x] Build 5
+- [ ] On a phone: a new study's talk opens the talk in Gospel Library
+- [ ] Plans: their talks are not checked yet
+
 ## Speaking a thought ⬜ built, not yet tried on a phone
 
 **Asked for in Dave's first feedback note** ("Add voice transcription for Journal"), and

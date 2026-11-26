@@ -109,6 +109,17 @@ enum GospelLibrary {
         return segments.isEmpty ? [Segment(text: text)] : segments
     }
 
+    /// Where a talk in a study links: to the talk itself when the server
+    /// supplied its address from the list of real talks, otherwise to a
+    /// search. Only a churchofjesuschrist.org address is ever opened.
+    static func link(for talk: Study.Talk) -> URL {
+        if let address = talk.url, let url = URL(string: address),
+           url.scheme == "https", url.host() == "www.churchofjesuschrist.org" {
+            return url
+        }
+        return searchURL(speaker: talk.speaker, talk: talk.talk)
+    }
+
     /// A conference-scoped Gospel Library search for a talk.
     static func searchURL(speaker: String, talk: String) -> URL {
         // The same characters JavaScript's encodeURIComponent leaves alone, so

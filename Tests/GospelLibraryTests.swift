@@ -95,6 +95,30 @@ struct GospelLibraryTests {
         #expect(GospelLibrary.talk(in: #"Someone — "A Title" (a devotional)"#) == nil)
     }
 
+    @Test("A talk with its own address links straight to it")
+    func direct() {
+        let talk = Study.Talk(
+            speaker: "President Russell M. Nelson", talk: "Let God Prevail", session: "October 2020", point: "",
+            url: "https://www.churchofjesuschrist.org/study/general-conference/2020/10/46nelson?lang=eng"
+        )
+        #expect(GospelLibrary.link(for: talk).absoluteString == "https://www.churchofjesuschrist.org/study/general-conference/2020/10/46nelson?lang=eng")
+    }
+
+    @Test("A talk without an address, or with one elsewhere, links to the search")
+    func searchWhenNoAddress() {
+        var talk = Study.Talk(speaker: "Elder David A. Bednar", talk: "Bear Up Their Burdens with Ease", session: "April 2014", point: "")
+        #expect(GospelLibrary.link(for: talk) == GospelLibrary.searchURL(speaker: talk.speaker, talk: talk.talk))
+        talk.url = "https://example.com/talk"
+        #expect(GospelLibrary.link(for: talk) == GospelLibrary.searchURL(speaker: talk.speaker, talk: talk.talk))
+    }
+
+    @Test("A study saved before addresses existed still opens")
+    func olderStudy() throws {
+        let json = #"{"speaker":"Elder David A. Bednar","talk":"Bear Up Their Burdens with Ease","session":"April 2014","point":"p"}"#
+        let talk = try JSONDecoder().decode(Study.Talk.self, from: Data(json.utf8))
+        #expect(talk.url == nil)
+    }
+
     @Test("Talks link to a conference search")
     func search() {
         let address = GospelLibrary.searchURL(speaker: "Elder David A. Bednar", talk: "Bear Up Their Burdens with Ease").absoluteString
