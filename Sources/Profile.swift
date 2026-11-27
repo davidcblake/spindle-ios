@@ -21,6 +21,11 @@ final class Profile {
     var hiddenSections: [String] = []
     /// "core" or "expanded", the web app's two values.
     var conferenceScope: String = ConferenceScope.core.rawValue
+    /// A daily reminder to study (`DailyReminder`), and when. Kept here so it
+    /// follows the person to their other devices once sync is on.
+    var remindsDaily: Bool = false
+    var reminderHour: Int = 7
+    var reminderMinute: Int = 0
     var createdAt: Date = Date.distantPast
 
     init(createdAt: Date = .now) {

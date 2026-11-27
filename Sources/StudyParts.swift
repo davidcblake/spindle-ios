@@ -82,6 +82,13 @@ struct StudySectionView: View {
                             Link("“\(talk.talk)” · \(talk.session)", destination: GospelLibrary.link(for: talk))
                                 .ppText(.caption)
                                 .fontWeight(.semibold)
+                            if GospelLibrary.talkAddress(talk.url) == nil {
+                                // Prepared before talks were checked against
+                                // the real ones (November 2026): it may not be.
+                                Label("Not verified · tap ↻ for a fresh study", systemImage: "info.circle")
+                                    .ppText(.caption)
+                                    .foregroundStyle(theme.textSecondary)
+                            }
                         }
                     }
                 }

@@ -33,6 +33,23 @@ struct PlanTests {
         #expect(plan.summary == "Mercy across the standard works.")
     }
 
+    @Test("A real talk in a plan keeps its own address; other items have none")
+    func talkAddress() throws {
+        let json = #"""
+        {"title":"Faith","description":"d","items":[
+          {"title":"Let God Prevail","subtitle":"s","reference":"President Russell M. Nelson — \"Let God Prevail\" (October 2020)",
+           "url":"https://www.churchofjesuschrist.org/study/general-conference/2020/10/46nelson?lang=eng"},
+          {"title":"Alma 32","subtitle":"s","reference":"Alma 32"}]}
+        """#
+        let decoded = try JSONDecoder().decode(GeneratedPlan.self, from: Data(json.utf8))
+        let container = try store()
+        let plan = StudyPlan.save(decoded, request: "faith", in: container.mainContext)
+        let items = plan.orderedItems
+        #expect(GospelLibrary.talkAddress(items[0].url)?.absoluteString.hasSuffix("46nelson?lang=eng") == true)
+        #expect(items[1].url.isEmpty)
+        #expect(GospelLibrary.talkAddress(items[1].url) == nil)
+    }
+
     @Test("Ticking items off counts towards the plan, in the web app's words")
     func progress() throws {
         let container = try store()

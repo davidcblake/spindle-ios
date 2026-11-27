@@ -83,6 +83,9 @@ struct GeneratedPlan: Codable, Equatable, Sendable {
         var subtitle: String
         /// A scripture reference, a talk citation, or empty.
         var reference: String
+        /// A real talk's own Gospel Library address, which the server adds
+        /// from its list of real talks. Never on anything else.
+        var url: String? = nil
     }
 
     var title: String

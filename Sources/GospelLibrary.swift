@@ -113,11 +113,15 @@ enum GospelLibrary {
     /// supplied its address from the list of real talks, otherwise to a
     /// search. Only a churchofjesuschrist.org address is ever opened.
     static func link(for talk: Study.Talk) -> URL {
-        if let address = talk.url, let url = URL(string: address),
-           url.scheme == "https", url.host() == "www.churchofjesuschrist.org" {
-            return url
-        }
-        return searchURL(speaker: talk.speaker, talk: talk.talk)
+        talkAddress(talk.url) ?? searchURL(speaker: talk.speaker, talk: talk.talk)
+    }
+
+    /// A talk address the server supplied, if it is a churchofjesuschrist.org
+    /// one; nil for anything else, including nothing.
+    static func talkAddress(_ address: String?) -> URL? {
+        guard let address, let url = URL(string: address),
+              url.scheme == "https", url.host() == "www.churchofjesuschrist.org" else { return nil }
+        return url
     }
 
     /// A conference-scoped Gospel Library search for a talk.
