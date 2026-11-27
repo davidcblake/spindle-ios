@@ -1,5 +1,6 @@
 import CoreData
 import Foundation
+import PPCore
 import PPData
 import SwiftData
 
@@ -23,11 +24,21 @@ enum SpindleStore {
     /// phone only, so a sync problem never costs anyone their journal. iCloud
     /// being signed out is not a failure: the store opens and simply waits.
     static func open() throws -> ModelContainer {
+        guard syncs else { return try PPModelStore.container(for: models, kind: .thisDeviceOnly) }
         do {
             return try PPModelStore.container(for: models, kind: .syncedTo(container: cloudKitContainer))
         } catch {
             return try PPModelStore.container(for: models, kind: .thisDeviceOnly)
         }
+    }
+
+    /// Whether this build may use CloudKit at all. A build without the iCloud
+    /// entitlement (CI's, which is unsigned) is stopped by CloudKit the moment
+    /// it is touched, so those builds and test runs stay on the device.
+    static var syncs: Bool {
+        let built = BundleConfiguration().string("SpindleICloudSync", default: "YES") == "YES"
+        let testing = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+        return built && !testing
     }
 
     #if DEBUG
@@ -46,7 +57,7 @@ enum SpindleStore {
     static func prepareCloudKitSchema() {
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
         let key = "cloudKitSchemaPreparedForBuild"
-        guard UserDefaults.standard.string(forKey: key) != build else { return }
+        guard syncs, UserDefaults.standard.string(forKey: key) != build else { return }
         let container = cloudKitContainer
         Task.detached(priority: .background) {
             do {
