@@ -1,4 +1,5 @@
 import PPDesign
+import PPNotify
 import SwiftData
 import SwiftUI
 
@@ -11,7 +12,10 @@ import SwiftUI
 struct SettingsScreen: View {
     @Environment(\.ppTheme) private var theme
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.reminders) private var reminders
     @Bindable var profile: Profile
+    /// Why the reminder could not be set, in words for a person.
+    @State private var reminderProblem: String?
 
     var body: some View {
         NavigationStack {
@@ -44,6 +48,28 @@ struct SettingsScreen: View {
                 }
 
                 Section {
+                    Toggle("Remind me to study", isOn: Binding(
+                        get: { profile.remindsDaily },
+                        set: { on in
+                            profile.remindsDaily = on
+                            Task { await applyReminder() }
+                        }
+                    ))
+                    if profile.remindsDaily {
+                        DatePicker("Time", selection: reminderTime, displayedComponents: .hourAndMinute)
+                    }
+                    if let reminderProblem {
+                        Text(reminderProblem)
+                            .ppText(.caption)
+                            .foregroundStyle(theme.textSecondary)
+                    }
+                } header: {
+                    Text("Daily reminder")
+                } footer: {
+                    Text("A gentle nudge each day at the time you choose. It's set on your iPhone; nothing is sent anywhere.")
+                }
+
+                Section {
                     NavigationLink("Send feedback or an idea") {
                         FeedbackScreen()
                     }
@@ -61,11 +87,52 @@ struct SettingsScreen: View {
             }
             .tint(theme.accent)
             .navigationTitle("Settings")
+            .onChange(of: profile.firstName) {
+                // The reminder greets the person by name.
+                if profile.remindsDaily { Task { await applyReminder() } }
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
             }
+        }
+    }
+}
+
+extension SettingsScreen {
+    /// The reminder time as a picker wants it; saving reschedules.
+    private var reminderTime: Binding<Date> {
+        Binding(
+            get: {
+                Calendar.current.date(bySettingHour: profile.reminderHour, minute: profile.reminderMinute, second: 0, of: .now) ?? .now
+            },
+            set: { time in
+                let parts = Calendar.current.dateComponents([.hour, .minute], from: time)
+                profile.reminderHour = parts.hour ?? 7
+                profile.reminderMinute = parts.minute ?? 0
+                Task { await applyReminder() }
+            }
+        )
+    }
+
+    /// Schedules the reminder as the profile now says, or cancels it. If it
+    /// cannot be set (notifications turned off), the switch goes back off
+    /// and says why.
+    private func applyReminder() async {
+        reminderProblem = nil
+        guard profile.remindsDaily else {
+            await reminders.cancel(id: DailyReminder.id)
+            return
+        }
+        do {
+            try await reminders.schedule(DailyReminder.reminder(for: profile))
+        } catch let failure as NotifyFailure {
+            profile.remindsDaily = false
+            reminderProblem = failure.userMessage
+        } catch {
+            profile.remindsDaily = false
+            reminderProblem = "The reminder couldn't be set. Try again in a moment."
         }
     }
 }

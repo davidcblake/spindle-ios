@@ -231,7 +231,11 @@ private struct PlanItemRow: View {
                         .ppText(.caption)
                         .foregroundStyle(theme.textSecondary)
                 }
-                if !item.reference.isEmpty, item.reference != item.title {
+                if let talk = GospelLibrary.talkAddress(item.url) {
+                    // A real talk the server checked: straight to it.
+                    Link(item.reference.isEmpty ? "Read the talk" : item.reference, destination: talk)
+                        .ppText(.caption)
+                } else if !item.reference.isEmpty, item.reference != item.title {
                     Text(GospelLibrary.linked(item.reference))
                         .ppText(.caption)
                 }

@@ -2,6 +2,7 @@ import PPCore
 import PPData
 import PPDesign
 import PPInput
+import PPNotify
 import SwiftData
 import SwiftUI
 
@@ -59,6 +60,7 @@ struct SpindleApp: App {
                 .environment(connection)
                 .environment(\.studyService, studyService)
                 .transcriber(transcriber)
+                .reminders(NotificationReminders())
                 .modelContainer(container)
         case .failure(let error):
             PPErrorView(error: CouldNotOpenTheJournal(logMessage: String(describing: error)))

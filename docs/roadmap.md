@@ -246,10 +246,12 @@ stays, because it is what prepares studies and plans for the phone.
 
 Ideas that are not in the web app, so they wait:
 
-- A daily reminder (`PPNotify`)
-- Checking studies for invented references and talks: options, sources and
-  permissions noted in `davidcblake/spindle/docs/accuracy-options.md`
-  (2026-10-10, not started)
+- [x] A daily reminder (`PPNotify`): Settings › Daily reminder, a repeating
+      local notification at the person's chosen time (`DailyReminder.swift`)
+- [x] Checking studies for invented talks: the server checks every talk
+      against the list of real ones (spindle PRs #12, #13); real talks link
+      straight to the talk, in studies and plans; older studies' talks say
+      "Not verified · tap ↻"
 - Anything from the spec's v2 list, and the open question in
   `plug-and-play-ios/docs/where-we-are.md`: a study generator, or a
   conversational companion

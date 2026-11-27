@@ -49,14 +49,18 @@ final class PlanItem {
     var title: String = ""
     var subtitle: String = ""
     var reference: String = ""
+    /// The talk's own Gospel Library address when `reference` is a real talk
+    /// (the server checks it); empty otherwise, and on items saved before.
+    var url: String = ""
     var completedAt: Date?
     var plan: StudyPlan?
 
-    init(position: Int, title: String, subtitle: String, reference: String) {
+    init(position: Int, title: String, subtitle: String, reference: String, url: String = "") {
         self.position = position
         self.title = title
         self.subtitle = subtitle
         self.reference = reference
+        self.url = url
     }
 
     var isDone: Bool { completedAt != nil }
@@ -73,7 +77,7 @@ extension StudyPlan {
         let plan = StudyPlan(title: generated.title, summary: generated.description, request: request)
         context.insert(plan)
         for (index, item) in generated.items.enumerated() {
-            let saved = PlanItem(position: index + 1, title: item.title, subtitle: item.subtitle, reference: item.reference)
+            let saved = PlanItem(position: index + 1, title: item.title, subtitle: item.subtitle, reference: item.reference, url: item.url ?? "")
             context.insert(saved)
             saved.plan = plan
         }

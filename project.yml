@@ -37,6 +37,8 @@ targets:
         product: PPDesign
       - package: PlugAndPlay
         product: PPInput
+      - package: PlugAndPlay
+        product: PPNotify
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.wpv.spindle
