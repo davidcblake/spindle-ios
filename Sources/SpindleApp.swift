@@ -9,7 +9,8 @@ import SwiftUI
 /// Spindle for iPhone.
 ///
 /// Native SwiftUI on the Plug and Play foundation, with no sign-in: iCloud is
-/// the account, and the journal lives on the phone. The reasoning is in
+/// the account. The journal lives on the phone and is mirrored to the person's
+/// own private iCloud, so their devices agree. The reasoning is in
 /// `docs/decisions/0001-native-rebuild-on-plug-and-play.md` in the Spindle
 /// repository.
 @main
@@ -35,13 +36,10 @@ struct SpindleApp: App {
     private let transcriber: any Transcriber = OnDeviceTranscriber()
 
     init() {
-        journal = Result {
-            // On this device only, for now. Sync turns on with `.synced` once
-            // the CloudKit container is entitled and signed — see docs/roadmap.md.
-            // Shipping `.synced` before then would trade a working app for a
-            // launch crash on every phone without the entitlement.
-            try PPModelStore.container(for: [JournalEntry.self, Thought.self, Profile.self, StudyPlan.self, PlanItem.self], kind: .thisDeviceOnly)
-        }
+        journal = Result { try SpindleStore.open() }
+        #if DEBUG
+        SpindleStore.prepareCloudKitSchema()
+        #endif
     }
 
     var body: some Scene {

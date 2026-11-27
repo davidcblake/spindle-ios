@@ -110,8 +110,15 @@ send people the **public link**.
 
 ## After that
 
-- **iCloud sync** (roadmap Phase 3). I need the CloudKit container's exact name —
-  developer.apple.com → Identifiers → iCloud Containers — it probably reads
-  `iCloud.com.wpv.spindle`. Getting it wrong is a crash on launch, so it is not guessed.
+- **iCloud sync** (roadmap Phase 3). Container `iCloud.com.wpv.spindle`, ticked on
+  the Spindle App ID (confirmed 2026-11-27). One step after the build that turns it
+  on, before TestFlight copies can sync:
+  1. Run Spindle from Xcode onto your iPhone once (the ▶ button, not Archive), signed
+     in to iCloud, and leave it open a minute. A build from Xcode teaches CloudKit's
+     *development* environment every kind of record Spindle saves.
+  2. Open icloud.developer.apple.com → CloudKit Console → `iCloud.com.wpv.spindle` →
+     Schema → **Deploy Schema Changes…** → Deploy. That copies it to *production*,
+     which is what TestFlight and the App Store use.
+  Do it again only when a build adds something new to save.
 - **The App Store itself**, after TestFlight. The listing and privacy answers are
   drafted in `docs/app-store.md`, ready to paste.
