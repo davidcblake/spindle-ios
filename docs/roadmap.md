@@ -221,7 +221,7 @@ stays, because it is what prepares studies and plans for the phone.
 
 ## Phase 3 — iCloud on ⬜
 
-- [ ] The store switched to `.synced`, once the CloudKit container is entitled
+- [x] The store switched to `.syncedTo(container: "iCloud.com.wpv.spindle")`, once the CloudKit container is entitled
       and signed. **This is the first time the foundation's CloudKit code will
       ever have run.**
 - [ ] The same journal, thoughts, plans and settings on a second device
@@ -260,4 +260,4 @@ Ideas that are not in the web app, so they wait:
 
 | Blocker | Blocks | Status |
 |---|---|---|
-| CloudKit container + signing | Phase 3 | Container exists; the app has never been signed |
+| CloudKit container + signing | Phase 3 | Done 2026-11-27: entitled and signed; schema deploy to production is Dave's step |

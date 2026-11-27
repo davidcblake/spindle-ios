@@ -60,7 +60,8 @@ jobs:
             -scheme Spindle \
             -destination "id=${{ steps.simulator.outputs.udid }}" \
             -resultBundlePath TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            SPINDLE_ICLOUD_SYNC=NO
 
       - name: What schemes does this project have?
         if: failure()
