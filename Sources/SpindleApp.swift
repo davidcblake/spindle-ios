@@ -36,6 +36,12 @@ struct SpindleApp: App {
     private let transcriber: any Transcriber = OnDeviceTranscriber()
 
     init() {
+        #if DEBUG
+        if let screenshot = Screenshot.requested {
+            journal = Result { try Screenshot.store(for: screenshot) }
+            return
+        }
+        #endif
         journal = Result { try SpindleStore.open() }
         #if DEBUG
         SpindleStore.prepareCloudKitSchema()
@@ -53,7 +59,7 @@ struct SpindleApp: App {
     private var content: some View {
         switch journal {
         case .success(let container):
-            RootView()
+            screen
                 .tint(PPTheme.spindle.accent)
                 .environment(connection)
                 .environment(\.studyService, studyService)
@@ -63,6 +69,22 @@ struct SpindleApp: App {
         case .failure(let error):
             PPErrorView(error: CouldNotOpenTheJournal(logMessage: String(describing: error)))
         }
+    }
+
+    /// The app, or in a debug build asked for an App Store screenshot, the
+    /// screen being photographed (`Screenshot`).
+    @ViewBuilder
+    private var screen: some View {
+        #if DEBUG
+        switch Screenshot.requested {
+        case .study: Screenshot.StudyPage()
+        case .journal: RootView(tab: .journal)
+        case .plans: RootView(tab: .plans)
+        case .today, nil: RootView()
+        }
+        #else
+        RootView()
+        #endif
     }
 }
 

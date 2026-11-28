@@ -1,5 +1,7 @@
 # App Store Connect — drafted answers
 
+**Submitting? Use `docs/app-store-submit.md`**: every field in order, ready to paste (2026-11-28).
+
 **Written 2026-10-08, against the code as it is today.** Paste-ready, but read before
 pasting: these are claims Apple holds the app to, and only Dave can make them.
 
@@ -27,7 +29,7 @@ pasting: these are claims Apple holds the app to, and only Dave can make them.
 > Describe what you want to study over the coming weeks, and Spindle builds a plan you can
 > check off as you go.
 >
-> No account and no ads. Your journal stays on your iPhone.
+> No account and no ads. Your journal stays on your iPhone and in your own private iCloud.
 >
 > Spindle is not an official product of The Church of Jesus Christ of Latter-day Saints.
 > Studies are prepared with AI; read the passages themselves, and let the scriptures and
