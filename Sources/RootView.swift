@@ -11,18 +11,26 @@ import SwiftUI
 /// Three tabs: Today, Journal and Plans. Starting a study is the round button
 /// on Today and Journal, and Settings is behind the profile button on Today.
 struct RootView: View {
+    enum Tabs: Hashable { case today, journal, plans }
+
     @Query private var profiles: [Profile]
+    @State private var tab: Tabs
+
+    /// `tab` is where it opens: Today, except for App Store screenshots.
+    init(tab: Tabs = .today) {
+        _tab = State(initialValue: tab)
+    }
 
     var body: some View {
         if let profile = Profile.current(in: profiles) {
-            TabView {
-                Tab("Today", systemImage: "sun.max") {
+            TabView(selection: $tab) {
+                Tab("Today", systemImage: "sun.max", value: Tabs.today) {
                     TodayScreen(profile: profile)
                 }
-                Tab("Journal", systemImage: "book.closed") {
+                Tab("Journal", systemImage: "book.closed", value: Tabs.journal) {
                     JournalScreen(hidden: profile.hidden)
                 }
-                Tab("Plans", systemImage: "checklist") {
+                Tab("Plans", systemImage: "checklist", value: Tabs.plans) {
                     PlansScreen()
                 }
             }
